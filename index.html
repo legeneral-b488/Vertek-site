@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vertek — Drone Photo & Vidéo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="gallery-config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:    #faf7f1;
+      --bg2:   #f0ede4;
+      --bg3:   #ffffff;
+      --text:  #1c1a14;
+      --muted: #857f72;
+      --accent:       #5a9e78;
+      --accent-bright:#72bc92;
+      --accent-dim:   #b8ddc8;
+      --warm:         #e8834a;
+      --warm-dim:     #fad4bc;
+      --sky:          #4a8ab4;
+      --border: rgba(0,0,0,0.08);
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body:    'Barlow', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    ::selection { background: var(--accent-dim); color: var(--text); }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 2px; }
+    #root { min-height: 100vh; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ── LOGO ── */
+const LogoSVG = () => (
+  <svg width="48" height="48" viewBox="0 0 400 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 50 80 L 350 80 L 280 180 L 200 280 L 120 180 Z" fill="currentColor" stroke="currentColor" strokeWidth="20" strokeLinejoin="round" strokeLinecap="round"/>
+    <path d="M 140 200 L 200 300 L 260 200" fill="currentColor" stroke="currentColor" strokeWidth="20" strokeLinejoin="round" strokeLinecap="round"/>
+  </svg>
+);
+const LogoSmall = () => (
+  <svg width="32" height="32" viewBox="0 0 400 480" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 50 80 L 350 80 L 280 180 L 200 280 L 120 180 Z M 140 200 L 200 300 L 260 200" fillRule="evenodd"/>
+  </svg>
+);
+
+/* ── GLOBAL CSS ── */
+const css = `
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5vw;height:72px;display:flex;align-items:center;justify-content:space-between;transition:background .35s,box-shadow .35s;}
+.nav.on-hero .nav-logo img{filter:brightness(0) invert(1);}
+.nav.on-hero .nav-link{color:rgba(255,255,255,.7);}
+.nav.on-hero .nav-link:hover{color:#fff;}
+.nav.on-hero .nav-mob-btn{color:#fff;}
+.nav.scrolled{background:rgba(242,240,235,.95);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--border);}
+.nav.on-hero.scrolled .nav-logo img{filter:none;}
+.nav.on-hero.scrolled .nav-link{color:var(--muted);}
+.nav.on-hero.scrolled .nav-link:hover{color:var(--text);}
+.nav.on-hero.scrolled .nav-mob-btn{color:var(--text);}
+.nav-wordmark{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:var(--text);transition:color .3s;line-height:1;}
+.nav.on-hero .nav-wordmark{color:#fff;}
+.nav.on-hero.scrolled .nav-wordmark{color:var(--text);}
+.nav-links{display:flex;gap:22px;list-style:none;}
+.nav-link{font-family:var(--font-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-link:hover{color:var(--text);}
+.nav-cta-btn{font-family:var(--font-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:10px 22px;background:var(--accent);color:#fff;font-weight:700;border:none;cursor:pointer;transition:background .2s;text-decoration:none;}
+.nav-cta-btn:hover{background:var(--accent-bright);}
+.nav-mob-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text);}
+.mob-menu{display:none;position:fixed;inset:0;background:#fff;z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.mob-menu.open{display:flex;}
+.mob-menu a{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);text-decoration:none;}
+.mob-close{position:absolute;top:18px;right:5vw;background:none;border:none;color:var(--text);cursor:pointer;}
+@media(max-width:980px){.nav-links{display:none;}.nav-cta-btn{display:none;}.nav-mob-btn{display:block;}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 5vw 80px;color:#fff;}
+.hero-vid-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:#0a0c09;}
+.hero-vid-wrap video{width:100%;height:100%;object-fit:cover;opacity:.55;}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(170deg,rgba(4,5,3,.62) 0%,rgba(4,5,3,.48) 45%,rgba(4,5,3,.78) 100%);}
+.hero-content{position:relative;z-index:2;max-width:920px;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.22);padding:6px 16px;margin-bottom:30px;backdrop-filter:blur(6px);}
+.hero-dot{width:5px;height:5px;background:var(--accent-bright);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero-title{font-family:var(--font-display);font-size:clamp(50px,9vw,108px);font-weight:800;line-height:.9;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:26px;text-shadow:0 4px 40px rgba(0,0,0,.5);}
+.hero-title em{font-style:normal;color:#ffd080;}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.72);max-width:510px;margin:0 auto 42px;font-weight:300;line-height:1.7;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;color:rgba(255,255,255,.45);font-family:var(--font-display);font-size:10px;letter-spacing:.22em;text-transform:uppercase;z-index:2;animation:drift 3s ease-in-out infinite;}
+@keyframes drift{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+.hero-scroll-line{width:1px;height:38px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 30px;cursor:pointer;transition:all .2s;text-decoration:none;border:none;}
+.btn-p{background:var(--accent);color:#fff;}
+.btn-p:hover{background:var(--accent-bright);transform:translateY(-1px);}
+.btn-w{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.32);}
+.btn-w:hover{border-color:#fff;background:rgba(255,255,255,.08);transform:translateY(-1px);}
+.btn-d{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn-d:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
+.btn-g{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:13px;padding:11px 24px;}
+.btn-g:hover{color:var(--text);border-color:var(--accent-dim);}
+
+/* TRUST BAR */
+.trust{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 5vw;display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:11px;}
+.trust-val{font-family:var(--font-display);font-size:27px;font-weight:800;color:var(--accent);}
+.trust-lbl{font-size:12px;color:var(--muted);line-height:1.3;max-width:90px;}
+.trust-sep{width:1px;height:36px;background:var(--border);}
+
+/* SECTIONS */
+.sec{padding:96px 5vw;}
+.sec-lbl{font-family:var(--font-display);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+.sec-title{font-family:var(--font-display);font-size:clamp(34px,5vw,58px);font-weight:800;text-transform:uppercase;line-height:1;margin-bottom:18px;letter-spacing:-.01em;color:var(--text);}
+.sec-sub{color:var(--muted);font-size:16px;max-width:460px;font-weight:300;line-height:1.7;}
+
+/* PROBLEM / SOLUTION */
+.ps-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:52px;max-width:1160px;margin-left:auto;margin-right:auto;}
+.ps-card{padding:44px 40px;}
+.ps-card-problem{background:#fff8f4;border-top:3px solid #e8834a;}
+.ps-card-solution{background:#f2faf6;border-top:3px solid var(--accent);}
+.ps-tag{font-family:var(--font-display);font-size:10px;letter-spacing:.25em;text-transform:uppercase;padding:3px 10px;display:inline-block;margin-bottom:18px;}
+.ps-tag-p{color:#c06030;background:rgba(232,131,74,.1);}
+.ps-tag-s{color:var(--accent);background:rgba(114,138,154,.12);}
+.ps-h{font-family:var(--font-display);font-size:24px;font-weight:700;text-transform:uppercase;margin-bottom:14px;line-height:1.1;color:var(--text);}
+.ps-body{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:18px;}
+.ps-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.ps-list li{display:flex;align-items:flex-start;gap:9px;color:var(--muted);font-size:14px;}
+.ps-ico-x{color:#c07040;margin-top:1px;flex-shrink:0;font-size:13px;}
+.ps-ico-ok{color:var(--accent);margin-top:1px;flex-shrink:0;}
+@media(max-width:760px){.ps-wrap{grid-template-columns:1fr;}}
+
+/* SERVICES */
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:52px auto 44px;max-width:1160px;}
+.srv-card{background:var(--bg3);padding:38px 34px;border-top:3px solid transparent;transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden;}
+.srv-card:hover{border-top-color:var(--accent);box-shadow:0 8px 40px rgba(0,0,0,.07);}
+.srv-feat{border-top-color:var(--accent)!important;}
+.srv-pop{position:absolute;top:0;right:0;background:var(--accent);color:#fff;font-family:var(--font-display);font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px;font-weight:700;}
+.srv-num{font-family:var(--font-display);font-size:44px;font-weight:800;color:var(--accent-dim);line-height:1;margin-bottom:18px;}
+.srv-name{font-family:var(--font-display);font-size:21px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:12px;color:var(--text);}
+.srv-desc{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:22px;}
+.srv-price{font-family:var(--font-display);font-size:25px;font-weight:700;color:var(--accent);letter-spacing:-.02em;}
+.srv-note{font-size:12px;color:var(--muted);margin-top:3px;}
+.srv-inc{margin-top:20px;display:flex;flex-direction:column;gap:8px;}
+.srv-inc span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+.srv-inc .ck{color:var(--accent);}
+@media(max-width:920px){.srv-grid{grid-template-columns:1fr;max-width:520px;}}
+
+/* WHY */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:52px;max-width:1160px;margin-left:auto;margin-right:auto;}
+.why-card{padding:42px 34px;background:var(--bg3);border-bottom:3px solid transparent;transition:border-color .3s,box-shadow .3s;}
+.why-card:hover{border-bottom-color:var(--accent);box-shadow:0 6px 30px rgba(0,0,0,.06);}
+.why-ico{width:46px;height:46px;margin-bottom:22px;color:var(--accent);}
+.why-title{font-family:var(--font-display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;color:var(--text);}
+.why-body{color:var(--muted);font-size:14px;line-height:1.7;}
+.why-badge{display:inline-block;font-family:var(--font-display);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);padding:3px 10px;margin-top:14px;}
+@media(max-width:760px){.why-grid{grid-template-columns:1fr;}}
+@media(max-width:760px){.app-grid{grid-template-columns:1fr!important;}}
+
+/* PORTFOLIO */
+.port-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:300px 240px;gap:3px;margin-top:46px;max-width:1160px;margin-left:auto;margin-right:auto;}
+.port-cell{overflow:hidden;position:relative;cursor:pointer;}
+.port-cell:first-child{grid-row:1/3;}
+.port-inner{width:100%;height:100%;background:#d6d3cc;position:relative;overflow:hidden;transition:transform .6s ease;}
+.port-cell:hover .port-inner{transform:scale(1.04);}
+.port-stripe{width:100%;height:100%;}
+.port-lbl{position:absolute;bottom:14px;left:14px;font-family:var(--font-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#fff;z-index:2;text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.port-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;opacity:0;transition:opacity .3s;backdrop-filter:blur(4px);}
+.port-cell:hover .port-play{opacity:1;}
+.port-type{position:absolute;top:12px;left:12px;font-family:var(--font-display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;z-index:2;backdrop-filter:blur(4px);}
+.port-mono{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.08em;text-align:center;padding:0 16px;}
+@media(max-width:760px){.port-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;}.port-cell:first-child{grid-row:auto;grid-column:1/3;height:220px;}.port-cell{height:150px;}}
+
+
+/* PROCESS */
+.proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;max-width:1060px;margin-left:auto;margin-right:auto;position:relative;}
+.proc-steps::before{content:'';position:absolute;top:29px;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--accent-dim) 20%,var(--accent-dim) 80%,transparent);}
+.proc-step{padding:0 22px 0 0;}
+/* ── HERO DRONES ── */
+@keyframes drone-fly {
+  0%   { transform: translate(8vw,  55px) rotate(-3deg); }
+  100% { transform: translate(8vw,  55px) rotate(-3deg); }
+}
+@keyframes explode-out {
+  0%   { transform: translate(0,0) scale(1); opacity:1; }
+  60%  { opacity:1; }
+  100% { transform: translate(var(--ex), var(--ey)) scale(0.2) rotate(720deg); opacity:0; }
+}
+.drone-exploding { animation: explode-out 0.7s ease-in forwards !important; }
+@keyframes boom-ring {
+  0%   { transform:translate(-50%,-50%) scale(0); opacity:0.9; }
+  100% { transform:translate(-50%,-50%) scale(3); opacity:0; }
+}
+.boom { position:absolute; width:60px; height:60px; border-radius:50%; border:3px solid #ffa040; pointer-events:none; animation: boom-ring 0.6s ease-out forwards; z-index:10; }
+.drone-add-btn {
+  position:absolute; bottom:80px; right:5vw; z-index:5;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.3);
+  color:#fff; font-family:var(--font-display); font-size:11px; letter-spacing:.15em;
+  text-transform:uppercase; padding:8px 16px; cursor:pointer; backdrop-filter:blur(6px);
+  transition:background .2s; display:flex; align-items:center; gap:8px;
+}
+.drone-add-btn:hover { background:rgba(255,255,255,.22); }
+.drone-counter { font-size:14px; font-weight:800; color:#ffd080; }
+@keyframes prop-spin { to { transform: rotate(360deg); } }
+@keyframes drone-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+.drone-wrap { position:absolute; top:80px; left:0; z-index:3; animation:drone-fly 24s ease-in-out infinite; pointer-events:none; }
+.drone-body { animation:drone-bob 2.4s ease-in-out infinite; filter:drop-shadow(0 4px 12px rgba(0,0,0,.5)); }
+.prop { transform-origin: 50% 50%; transform-box: fill-box; animation:prop-spin 0.12s linear infinite; }
+
+/* end drone */
+.proc-num{width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:21px;font-weight:800;color:#fff;background:var(--accent);position:relative;z-index:1;margin-bottom:22px;border-radius:50%;}
+.proc-title{font-family:var(--font-display);font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:9px;color:var(--text);}
+.proc-body{font-size:14px;color:var(--muted);line-height:1.65;}
+@media(max-width:760px){.proc-steps{grid-template-columns:1fr 1fr;gap:36px;}.proc-steps::before{display:none;}}
+@media(max-width:480px){.proc-steps{grid-template-columns:1fr;}}
+
+/* FINAL CTA */
+.cta-sec{background:linear-gradient(135deg,#1c2e24 0%,#1c1a14 100%);color:#fff;text-align:center;padding:110px 5vw;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(114,138,154,.2) 0%,transparent 65%);pointer-events:none;}
+.cta-title{font-family:var(--font-display);font-size:clamp(42px,7vw,78px);font-weight:800;text-transform:uppercase;line-height:.93;margin-bottom:22px;letter-spacing:-.01em;position:relative;}
+.cta-sub{color:rgba(255,255,255,.6);font-size:17px;margin-bottom:40px;font-weight:300;position:relative;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
+.urgency{font-family:var(--font-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#ffa070;margin-bottom:18px;position:relative;}
+.urgency-dot{display:inline-block;width:5px;height:5px;background:#ffa070;border-radius:50%;margin-right:7px;animation:blink 1.5s infinite;}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1060px;margin:52px auto 0;}
+.cinfo-item{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;}
+.cinfo-ico{color:var(--accent);margin-top:2px;flex-shrink:0;}
+.cinfo-lbl{font-family:var(--font-display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.cinfo-val{font-size:15px;color:var(--text);}
+.cform{display:flex;flex-direction:column;gap:14px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ffield{display:flex;flex-direction:column;gap:5px;}
+.ffield label{font-family:var(--font-display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.ffield input,.ffield textarea,.ffield select{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-size:15px;padding:11px 14px;outline:none;transition:border-color .2s;resize:none;}
+.ffield input:focus,.ffield textarea:focus,.ffield select:focus{border-color:var(--accent-dim);}
+.ffield textarea{min-height:108px;}
+.fok{padding:28px;border:1px solid var(--accent-dim);background:rgba(114,138,154,.06);text-align:center;}
+@media(max-width:760px){.contact-wrap{grid-template-columns:1fr;gap:36px;}.frow{grid-template-columns:1fr;}}
+
+/* FOOTER */
+footer{background:#1c1a14;padding:32px 5vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.footer-wm{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;}
+.ftxt{font-size:13px;color:rgba(255,255,255,.35);}
+.flinks{display:flex;gap:22px;}
+.flinks a{font-family:var(--font-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;}
+.flinks a:hover{color:rgba(255,255,255,.75);}
+`;
+const styleEl = document.createElement('style');
+styleEl.textContent = css;
+document.head.appendChild(styleEl);
+
+/* ── NAV ── */
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [onHero, setOnHero] = useState(true);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const h = () => {
+      setScrolled(window.scrollY > 40);
+      const hero = document.getElementById('hero');
+      if (hero) setOnHero(window.scrollY < hero.offsetHeight - 80);
+    };
+    window.addEventListener('scroll', h);
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+  const links = [
+    ['#services','Services'],['#why','Pourquoi nous'],
+    ['#portfolio','Portfolio'],['#contact','Contact'],
+  ];
+  return (
+    <>
+      <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
+        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center',gap:'8px',color:'var(--text)'}}><LogoSmall /></a>
+        <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
+        <a href="#contact" className="nav-cta-btn">Demander un devis</a>
+        <button className="nav-mob-btn" onClick={()=>setOpen(true)}><MenuIco /></button>
+      </nav>
+      <div className={`mob-menu ${open?'open':''}`}>
+        <button className="mob-close" onClick={()=>setOpen(false)}><CloseIco /></button>
+        {links.map(([h,l])=><a key={h} href={h} onClick={()=>setOpen(false)}>{l}</a>)}
+        <a href="#contact" className="btn btn-p" onClick={()=>setOpen(false)}>Demander un devis</a>
+      </div>
+    </>
+  );
+}
+
+/* ── DRONE SVG ── */
+function DroneSVG() {
+  return (
+    <svg width="52" height="36" viewBox="0 0 52 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse className="prop" cx="10" cy="8"  rx="8" ry="2.5" fill="rgba(255,255,255,0.55)" style={{animationDelay:'0s'}}/>
+      <ellipse className="prop" cx="42" cy="8"  rx="8" ry="2.5" fill="rgba(255,255,255,0.55)" style={{animationDelay:'-0.06s'}}/>
+      <ellipse className="prop" cx="10" cy="28" rx="8" ry="2.5" fill="rgba(255,255,255,0.55)" style={{animationDelay:'-0.03s'}}/>
+      <ellipse className="prop" cx="42" cy="28" rx="8" ry="2.5" fill="rgba(255,255,255,0.55)" style={{animationDelay:'-0.09s'}}/>
+      <line x1="10" y1="8"  x2="26" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"/>
+      <line x1="42" y1="8"  x2="26" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"/>
+      <line x1="10" y1="28" x2="26" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"/>
+      <line x1="42" y1="28" x2="26" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"/>
+      <rect x="20" y="13" width="12" height="10" rx="3" fill="rgba(255,255,255,0.85)"/>
+      <circle cx="26" cy="22" r="2.5" fill="#222" opacity="0.8"/>
+      <circle cx="26" cy="22" r="1.2" fill="#555" opacity="0.6"/>
+      <circle cx="10" cy="8"  r="2" fill="white" opacity="0.9"/>
+      <circle cx="42" cy="8"  r="2" fill="white" opacity="0.9"/>
+      <circle cx="10" cy="28" r="2" fill="white" opacity="0.9"/>
+      <circle cx="42" cy="28" r="2" fill="white" opacity="0.9"/>
+    </svg>
+  );
+}
+
+/* ── HERO ── */
+const FLIGHT_CONFIGS = [
+  { delay:'0s', dur:'24s' },
+];
+
+function Hero() {
+  const vidRef = useRef(null);
+  const [fleet, setFleet] = useState([{ id:0, ex:0, ey:0 }]);
+  const [exploding, setExploding] = useState(false);
+  const [showBoom, setShowBoom] = useState(false);
+  const nextId = useRef(1);
+
+  useEffect(() => {
+    const v = vidRef.current;
+    if (!v) return;
+    const fallbacks = [
+      'https://videos.pexels.com/video-files/2169880/2169880-hd_1920_1080_25fps.mp4',
+      'https://videos.pexels.com/video-files/1851190/1851190-hd_1280_720_25fps.mp4',
+    ];
+    let idx = 0;
+    const tryNext = () => {
+      if (idx >= fallbacks.length) return;
+      v.src = fallbacks[idx++];
+      v.load();
+    };
+    v.addEventListener('error', tryNext);
+    return () => v.removeEventListener('error', tryNext);
+  }, []);
+
+  const addDrone = () => {
+    if (exploding) return;
+    if (fleet.length >= 1) {
+      const withDirs = fleet.map(d => ({
+        ...d,
+        ex: (Math.random() - 0.5) * 400,
+        ey: (Math.random() - 0.5) * 300,
+      }));
+      setFleet(withDirs);
+      setExploding(true);
+      setShowBoom(true);
+      setTimeout(() => {
+        setFleet([{ id: nextId.current++, ex:0, ey:0 }]);
+        setExploding(false);
+        setShowBoom(false);
+      }, 900);
+    } else {
+      setFleet(d => [...d, { id: nextId.current++, ex:0, ey:0 }]);
+    }
+  };
+
+  return (
+    <section className="hero" id="hero">
+      <div className="hero-vid-wrap">
+        <video ref={vidRef} autoPlay muted loop playsInline preload="auto"
+          src="https://videos.pexels.com/video-files/5031099/5031099-hd_1920_1080_30fps.mp4">
+        </video>
+      </div>
+      <div className="hero-overlay"></div>
+
+      {fleet.map((drone, i) => {
+        const cfg = FLIGHT_CONFIGS[i % FLIGHT_CONFIGS.length];
+        return (
+          <div key={drone.id}
+            className={`drone-wrap${exploding ? ' drone-exploding' : ''}`}
+            style={exploding
+              ? { '--ex': `${drone.ex}px`, '--ey': `${drone.ey}px` }
+              : { animationDelay: cfg.delay, animationDuration: cfg.dur }
+            }>
+            <div className="drone-body"><DroneSVG /></div>
+          </div>
+        );
+      })}
+
+      {showBoom && <div className="boom" style={{left:'50%', top:'38%'}}></div>}
+
+      <button className="drone-add-btn" onClick={addDrone}>
+        <span>+ Drone</span>
+        <span className="drone-counter">{fleet.length}/7</span>
+      </button>
+
+      <div className="hero-content">
+        <div className="hero-badge">
+          <span className="hero-dot"></span>
+          Certifié A1 · DJI Mini 4 Pro · Disponible maintenant
+        </div>
+        <h1 className="hero-title">
+          Vos visuels<br />depuis les <em>airs</em>
+        </h1>
+        <p className="hero-sub">
+          Photo et vidéo aérienne professionnelle — qualité cinématographique, prix accessibles, intervention rapide.
+        </p>
+        <div className="hero-btns">
+          <a href="#contact" className="btn btn-p">Obtenir un devis <Arr /></a>
+          <a href="#contact" className="btn btn-w">Me contacter</a>
+        </div>
+      </div>
+      <div className="hero-scroll">
+        <div className="hero-scroll-line"></div>
+        <span>Découvrir</span>
+      </div>
+    </section>
+  );
+}
+
+/* ── TRUST ── */
+function Trust() {
+  const items = [
+    {v:'2 ans',l:'Expérience\nprofessionnelle'},
+    {v:'A1',l:'Certification\neuropéenne'},
+    {v:'<250g',l:'Drone léger\npolyvalent'},
+    {v:'24h',l:'Réponse\ngarantie'},
+  ];
+  return (
+    <div className="trust">
+      {items.map((it,i)=>(
+        <React.Fragment key={i}>
+          <div className="trust-item">
+            <span className="trust-val">{it.v}</span>
+            <span className="trust-lbl">{it.l.split('\n').map((x,j)=><span key={j} style={{display:'block'}}>{x}</span>)}</span>
+          </div>
+          {i<items.length-1&&<div className="trust-sep"></div>}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+/* ── PROBLEM / SOLUTION ── */
+function ProblemSolution() {
+  return (
+    <section className="sec" id="pourquoi" style={{background:'var(--bg)'}}>
+      <div style={{maxWidth:'1160px',margin:'0 auto'}}>
+        <div className="sec-lbl">Contexte</div>
+        <h2 className="sec-title">Le problème — et la solution</h2>
+      </div>
+      <div className="ps-wrap">
+        <div className="ps-card ps-card-problem">
+          <span className="ps-tag ps-tag-p">Le problème</span>
+          <h3 className="ps-h">Les photos au sol ne suffisent plus</h3>
+          <p className="ps-body">Dans un marché saturé, les visuels ordinaires passent inaperçus.</p>
+          <ul className="ps-list">
+            <li><span className="ps-ico-x">✕</span>Aucune perspective ni contexte</li>
+            <li><span className="ps-ico-x">✕</span>Faible engagement sur les annonces</li>
+            <li><span className="ps-ico-x">✕</span>Valeur perçue sous-estimée</li>
+            <li><span className="ps-ico-x">✕</span>Difficile de se démarquer</li>
+          </ul>
+        </div>
+        <div className="ps-card ps-card-solution">
+          <span className="ps-tag ps-tag-s">La solution Vertek</span>
+          <h3 className="ps-h">L'impact visuel qui change tout</h3>
+          <p className="ps-body">Les images aériennes captivent, valorisent et convertissent.</p>
+          <ul className="ps-list">
+            <li><span className="ps-ico-ok"><Chk /></span>Perspective unique et mémorable</li>
+            <li><span className="ps-ico-ok"><Chk /></span>+40 % d'engagement sur les annonces</li>
+            <li><span className="ps-ico-ok"><Chk /></span>Valeur perçue immédiatement supérieure</li>
+            <li><span className="ps-ico-ok"><Chk /></span>Qualité cinématographique accessible</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── SERVICES ── */
+function Services() {
+  const [activeTab, setActiveTab] = useState(0);
+  const cats = [
+    {
+      id:0,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 18V9l8-5 8 5v9" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><rect x="7.5" y="13" width="7" height="5" stroke="currentColor" strokeWidth="1.2"/></svg>,
+      label:'Immobilier',
+      color:'#5a9e78',
+      desc:'Agences immobilières, particuliers, promoteurs, marchands de biens',
+      apps:['Vente immobilière','Location saisonnière','Promotion neuf','Viager','Résidence secondaire'],
+      packs:[
+        {name:'Pack Essentiel',price:'75 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
+        {name:'Pack Complet',price:'190 € HT',altPrice:'140 € HT (rushes bruts)',delay:'72h',feat:true,inc:['15 photos HD + vidéo montée 60–90 s','Montage professionnel inclus','Option rushes bruts disponible']},
+        {name:'Pack Premium',price:'300 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
+      ],
+    },
+    {
+      id:1,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="1" y="7" width="20" height="9" rx="2" stroke="currentColor" strokeWidth="1.4"/><circle cx="6" cy="16" r="2" stroke="currentColor" strokeWidth="1.3"/><circle cx="16" cy="16" r="2" stroke="currentColor" strokeWidth="1.3"/><path d="M4 7V5a1 1 0 011-1h12a1 1 0 011 1v2" stroke="currentColor" strokeWidth="1.3"/></svg>,
+      label:'Véhicules',
+      color:'#9a6a3a',
+      desc:'Particuliers, concessionnaires, collectionneurs, loueurs',
+      apps:['Voiture de collection','Camping-car / van','Bateau','Moto','Véhicule de prestige'],
+      packs:[
+        {name:'Pack Véhicules',price:'90 € HT',delay:'48h',feat:true,inc:['12 photos sous différents angles','Mise en valeur produit','Livraison 48h']},
+        {name:'Option Vidéo',price:'+60 € HT',delay:'72h',feat:false,inc:['Vidéo cinématique 60 s','Mouvement orbital autour du véhicule','Montage inclus']},
+      ],
+    },
+    {
+      id:2,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.4"/><path d="M11 7v4l3 2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+      label:'Diagnostic & Inspection',
+      color:'#e8834a',
+      desc:'Collectivités, BTP, syndics, gestionnaires d\'ouvrages, assurances',
+      apps:['Toiture / façade','Ponts & ouvrages','Voies ferrées','Pylônes / mâts','Devis ravalement','Nidification'],
+      packs:[
+        {name:'Demi-journée',price:'400–500 € HT',delay:'5 jours',feat:false,inc:['≤ 4h sur site','Photos HD annotables','Vidéo structurée par zone']},
+        {name:'Journée complète',price:'700–900 € HT',delay:'5 jours',feat:true,inc:['8h d\'intervention','Rapport complet par face/défaut','Livraison 5 jours ouvrés']},
+        {name:'Ouvrage supp.',price:'+80–150 € HT',delay:'Inclus',feat:false,inc:['Ouvrage supplémentaire','Même journée','Sur devis final']},
+      ],
+      note:'Déplacement sur devis · Formation technique spécialisée',
+    },
+    {
+      id:3,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M2 16c2-4 4-6 9-6s7 2 9 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="11" cy="7" r="3" stroke="currentColor" strokeWidth="1.4"/></svg>,
+      label:'Agriculture',
+      color:'#4a8ab4',
+      desc:'Agriculteurs, coopératives, géomètres',
+      apps:['Diagnostic cultures','Cartographie parcelles','Stress hydrique','Suivi récoltes','Grandes surfaces'],
+      packs:[
+        {name:'Inspection cultures',price:'125 € HT',delay:'48h',feat:true,inc:['Surface ≤ 50 ha','Photos HD géolocalisées','Livraison 48h']},
+        {name:'Grandes surfaces',price:'Sur devis',delay:'À définir',feat:false,inc:['> 50 ha ou suivi récurrent','Tarif dégressif','Planification personnalisée']},
+      ],
+    },
+    {
+      id:4,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2v4M11 16v4M2 11h4M16 11h4M4.9 4.9l2.8 2.8M14.3 14.3l2.8 2.8M4.9 17.1l2.8-2.8M14.3 7.7l2.8-2.8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="11" cy="11" r="3" stroke="currentColor" strokeWidth="1.4"/></svg>,
+      label:'Sinistre',
+      color:'#c05050',
+      desc:'Assurances, coopératives, exploitants agricoles',
+      apps:['Constat grêle','Dégâts gel','Inondation','Expertise assurance','Intervention rapide'],
+      packs:[
+        {name:'Constat sinistre',price:'175–250 € HT',delay:'Prioritaire',feat:true,inc:['Intervention prioritaire si possible','Rapport détaillé assurance','Grêle, gel, inondation…']},
+      ],
+    },
+    {
+      id:5,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.4"/><path d="M9 11h4M11 9v4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
+      label:'Autre',
+      color:'#6b5b95',
+      desc:'Un projet unique qui ne correspond à aucune de ces catégories ?',
+      apps:['Projet personnalisé','Concept innovant','Usage non classique','Défi sur mesure'],
+      packs:null,
+      customMsg:true,
+    },
+  ];
+  const cat = cats[activeTab];
+  return (
+    <section className="sec" id="services" style={{background:'var(--bg2)'}}>
+      <div style={{maxWidth:'1160px',margin:'0 auto'}}>
+        <div className="sec-lbl">Services & Tarifs</div>
+        <h2 className="sec-title">Ce que je propose</h2>
+        <p className="sec-sub">Trois domaines d'expertise, des tarifs clairs.</p>
+        {/* Tabs */}
+        <div style={{display:'flex',gap:'3px',marginTop:'36px',flexWrap:'wrap'}}>
+          {cats.map(c=>(
+            <button key={c.id} onClick={()=>setActiveTab(c.id)} style={{display:'flex',alignItems:'center',gap:'9px',padding:'13px 22px',fontFamily:'var(--font-display)',fontSize:'13px',fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',border:'none',cursor:'pointer',background:activeTab===c.id?c.color:'var(--bg3)',color:activeTab===c.id?'#fff':c.color,transition:'all .2s',borderBottom:activeTab===c.id?`3px solid ${c.color}`:'3px solid transparent'}}>
+              <span style={{color:activeTab===c.id?'#fff':c.color}}>{c.icon}</span>
+              {c.label}
+            </button>
+          ))}
+        </div>
+        {/* Content */}
+        <div style={{background:'var(--bg3)',padding:'0',marginTop:'3px'}}>
+          <div style={{padding:'32px 36px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'flex-start',justifyContent:'space-between',flexWrap:'wrap',gap:'16px'}}>
+            <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+              {cat.apps.map((a,i)=>(
+                <span key={i} style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.1em',textTransform:'uppercase',padding:'4px 10px',background:`${cat.color}18`,color:cat.color,borderRadius:'2px'}}>{a}</span>
+              ))}
+            </div>
+          </div>
+          {/* Packs */}
+          {cat.customMsg?(
+            <div style={{padding:'48px 36px',textAlign:'center'}}>
+              <p style={{fontSize:'15px',color:'var(--text)',marginBottom:'16px',lineHeight:1.8}}>Ce projet mérite une discussion personnalisée. Contactez-nous pour que nous puissions ensemble explorer les meilleures solutions adaptées à votre vision.</p>
+              <a href="#contact" style={{display:'inline-block',fontFamily:'var(--font-display)',fontSize:'12px',letterSpacing:'.1em',textTransform:'uppercase',padding:'12px 28px',background:cat.color,color:'#fff',fontWeight:700,textDecoration:'none',transition:'background .2s',cursor:'pointer'}} onMouseEnter={(e)=>e.target.style.background=cat.color+'dd'} onMouseLeave={(e)=>e.target.style.background=cat.color}>Discutons de votre projet</a>
+            </div>
+          ):(
+            <div style={{display:'grid',gridTemplateColumns:`repeat(${cat.packs.length},1fr)`,gap:'3px',padding:'3px',background:'var(--border)'}}>
+              {cat.packs.map((p,i)=>(
+                <div key={i} style={{background:'var(--bg3)',padding:'28px 24px',borderTop:`3px solid ${p.feat?cat.color:'transparent'}`,position:'relative'}}>
+                  {p.feat&&<div style={{position:'absolute',top:0,right:0,background:cat.color,color:'#fff',fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 10px',fontWeight:700}}>Recommandé</div>}
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'17px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{p.name}</div>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'24px',fontWeight:800,color:cat.color,lineHeight:1,marginBottom:'4px'}}>{p.price}</div>
+                  {p.altPrice&&<div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'4px'}}>{p.altPrice}</div>}
+                  <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'18px',fontFamily:'var(--font-display)',letterSpacing:'.08em',textTransform:'uppercase'}}>Livraison {p.delay}</div>
+                  <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+                    {p.inc.map((x,j)=><span key={j} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'var(--muted)'}}><span style={{color:cat.color}}><Chk /></span>{x}</span>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {cat.note&&<div style={{padding:'16px 36px',fontSize:'13px',color:'var(--muted)',borderTop:'1px solid var(--border)'}}>{cat.note}</div>}
+        </div>
+        <div style={{textAlign:'center',marginTop:'32px'}}>
+          <a href="#contact" className="btn btn-p">Simuler mon devis <Arr /></a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── WHY ── */
+function Why() {
+  const items = [
+    {
+      icon:<svg className="why-ico" viewBox="0 0 48 48" fill="none"><path d="M24 4L6 14v10c0 10.5 7.7 20.3 18 22.7C34.3 44.3 42 34.5 42 24V14L24 4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M17 24l5 5 9-9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+      title:'Flexibilité Réglementaire',
+      body:'Mon DJI Mini 4 Pro (<250g) peut voler dans des zones restreintes aux drones lourds et opérer près des personnes sous certification A1 sans démarches complexes.',
+      badge:'Certification A1 · <250g',
+    },
+    {
+      icon:<svg className="why-ico" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.4"/><path d="M24 14v10l6 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+      title:'Rapport Qualité-Prix',
+      body:'Qualité cinématographique proche du standard professionnel. Pas d\'opérateur lourd, pas de surcoût logistique — vous bénéficiez de l\'essentiel à prix juste.',
+      badge:'Tarifs transparents',
+    },
+    {
+      icon:<svg className="why-ico" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M6 18h36M16 10v8M32 10v8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M14 28h8M26 28h8M14 34h6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
+      title:'Expérience Grands Groupes',
+      body:'2 ans d\'expérience terrain en milieu industriel et ferroviaire. Missions réalisées pour des groupes exigeants, avec contraintes de sécurité strictes, délais serrés et environnements complexes.',
+      badge:'SNCF · Grands comptes',
+      logos: true,
+    },
+  ];
+  return (
+    <section className="sec" id="why" style={{background:'var(--bg)'}}>
+      <div style={{maxWidth:'1160px',margin:'0 auto'}}>
+        <div className="sec-lbl">Nos atouts</div>
+        <h2 className="sec-title">Pourquoi Vertek ?</h2>
+        <p className="sec-sub">Trois raisons concrètes de nous choisir plutôt qu'un opérateur classique.</p>
+      </div>
+      <div className="why-grid">
+        {items.map((it,i)=>(
+          <div key={i} className="why-card">
+            {it.icon}
+            <div className="why-title">{it.title}</div>
+            <p className="why-body">{it.body}</p>
+            <span className="why-badge">{it.badge}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── PORTFOLIO ── */
+function Portfolio() {
+  const raw = (window.GALLERY && window.GALLERY.length > 0) ? window.GALLERY : [
+    {file:'DJI_20240412193357_0126_D.JPG',type:'photo',label:'Vue aérienne — Vertek',tag:'Photo',large:true},
+    {file:'pasted-1777023291134-0.png',type:'photo',label:'Champs de colza',tag:'Diagnostic Agricole'},
+    {file:'nettoyage-panneaux-solaires.jpg',type:'photo',label:'Panneaux solaires',tag:'Inspection'},
+    {file:'photographie-aerienne-par-drone-d-un-propriete.jpg',type:'photo',label:'Immobilier & Maisons',tag:'Photo Aérienne'},
+    {file:'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',type:'photo',label:'Contrôle Pont',tag:'Infrastructure'},
+  ];
+  const cells = raw.map(item => ({
+    lbl: item.label,
+    type: item.tag,
+    large: !!item.large,
+    ...(item.type === 'video'
+      ? { video: `uploads/${item.file}` }
+      : { img: `uploads/${item.file}` }),
+  }));
+  return (
+    <section className="sec" id="portfolio" style={{background:'var(--bg2)'}}>
+      <div style={{maxWidth:'1160px',margin:'0 auto'}}>
+        <div className="sec-lbl">Portfolio</div>
+        <h2 className="sec-title">Nos réalisations</h2>
+        <p className="sec-sub">Photos et vidéos réels — vos propres visuels peuvent rejoindre la galerie.</p>
+      </div>
+      <div className="port-grid">
+        {cells.map((c,i)=>(
+          <div key={i} className="port-cell">
+            <div className="port-inner">
+              {c.video ? (
+                <video autoPlay muted loop playsInline src={c.video}
+                  style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}
+                  onError={e=>{
+                    const v=e.currentTarget;
+                    v.style.display='none';
+                    if(c.img){
+                      const img=document.createElement('img');
+                      img.src=c.img;
+                      img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+                      v.parentNode.insertBefore(img,v);
+                    }
+                  }}
+                />
+              ) : (
+                <img
+                  src={c.img}
+                  alt={c.lbl}
+                  style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}
+                  onError={e=>{
+                    if(c.imgFallback && e.target.src !== c.imgFallback){
+                      e.target.src = c.imgFallback;
+                    } else {
+                      e.target.style.display='none';
+                    }
+                  }}
+                />
+              )}
+              <div className="port-type">{c.type}</div>
+              <div className="port-play">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M4 2.5l8 4.5-8 4.5V2.5z"/></svg>
+              </div>
+              <div className="port-lbl">{c.lbl}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{textAlign:'center',marginTop:'28px'}}>
+        <a href="#contact" className="btn btn-g">Discuter de votre projet <Arr /></a>
+      </div>
+    </section>
+  );
+}
+
+/* ── PROCESS ── */
+function Process() {
+  const steps = [
+    {n:'01',t:'Demande de devis',b:'Formulaire ou appel direct. Réponse sous 24h avec une proposition claire.'},
+    {n:'02',t:'Validation du brief',b:'On échange sur vos besoins, l\'emplacement, les angles souhaités.'},
+    {n:'03',t:'Tournage',b:'Intervention aux conditions météo optimales. Discret, efficace, professionnel.'},
+    {n:'04',t:'Livraison rapide',b:'Fichiers retouchés sous 48h. Formats adaptés — web, impression, réseaux.'},
+  ];
+  return (
+    <section className="sec" id="process" style={{background:'var(--bg2)'}}>
+      <div style={{maxWidth:'1060px',margin:'0 auto'}}>
+        <div className="sec-lbl">Comment ça marche</div>
+        <h2 className="sec-title">Simple & efficace</h2>
+        <p className="sec-sub">4 étapes, zéro surprise.</p>
+      </div>
+      <div className="proc-steps">
+        {steps.map((s,i)=>(
+          <div key={i} className="proc-step">
+            <div className="proc-num">{s.n}</div>
+            <div className="proc-title">{s.t}</div>
+            <p className="proc-body">{s.b}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── FINAL CTA ── */
+function FinalCTA() {
+  return (
+    <section className="cta-sec">
+      <div className="cta-glow"></div>
+
+      <h2 className="cta-title">Prêt à élever<br />vos visuels ?</h2>
+      <p className="cta-sub">Faites la différence avec des images aériennes qui captivent et convertissent.</p>
+      <div className="cta-btns">
+        <a href="#contact" className="btn btn-p">Obtenir un devis <Arr /></a>
+        <a href="#contact" className="btn btn-w">Réserver une prestation</a>
+      </div>
+    </section>
+  );
+}
+
+/* ── CONTACT ── */
+function Contact() {
+  return (
+    <section className="sec" id="contact" style={{background:'var(--bg)'}}>
+      <div style={{maxWidth:'1060px',margin:'0 auto'}}>
+        <div className="sec-lbl">Contact</div>
+        <h2 className="sec-title">Parlons de votre projet</h2>
+        <p className="sec-sub">Je réponds à toutes les demandes sous 24h.</p>
+      </div>
+      <div className="contact-wrap">
+        <div>
+          <div className="cinfo-item">
+            <span className="cinfo-ico"><MailIco /></span>
+            <div>
+              <div className="cinfo-lbl">Email</div>
+              <a href="mailto:vertek.contact@gmail.com" className="cinfo-val" style={{color:'var(--text)',textDecoration:'none'}}>vertek.contact@gmail.com</a>
+            </div>
+          </div>
+          <div className="cinfo-item">
+            <span className="cinfo-ico"><PhoneIco /></span>
+            <div>
+              <div className="cinfo-lbl">Téléphone</div>
+              <a href="tel:+33695742516" className="cinfo-val" style={{color:'var(--text)',textDecoration:'none'}}>06 95 74 25 16</a>
+            </div>
+          </div>
+          <div style={{marginTop:'28px',padding:'24px',background:'var(--bg3)',border:'1px solid var(--border)'}}>
+            <div style={{fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.2em',textTransform:'uppercase',color:'var(--accent)',marginBottom:'12px'}}>Garanties</div>
+            {['Réponse sous 24h','Devis gratuit sans engagement','Certifié télépilote A1/A3 DGAC','2 ans d\'expérience professionnelle'].map((g,i)=>(
+              <div key={i} style={{display:'flex',alignItems:'center',gap:'9px',marginBottom:'9px',fontSize:'14px',color:'var(--muted)'}}>
+                <span style={{color:'var(--accent)'}}><Chk /></span>{g}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <button className="btn btn-p" style={{width:'100%',fontSize:'16px',padding:'16px 30px'}} onClick={()=>window.location.href='mailto:vertek.contact@gmail.com'}>
+            Nous contacter par email
+          </button>
+          <p style={{marginTop:'18px',fontSize:'14px',color:'var(--muted)',textAlign:'center'}}>Cliquez pour nous écrire directement depuis votre client email.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── FOOTER ── */
+function Footer() {
+  return (
+    <footer>
+      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoSmall /></a>
+      <span className="ftxt">© 2026 Vertek · Drone Photo & Vidéo</span>
+      <div className="flinks">
+        <a href="#hero">Accueil</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </footer>
+  );
+}
+
+/* ── TWEAKS ── */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#8a9a72",
+  "darkMode": false,
+  "showPrices": true,
+  "urgencyBanner": false
+}/*EDITMODE-END*/;
+
+function TweaksPanel({tweaks,setTweaks,visible,onClose}) {
+  if(!visible) return null;
+  const set = (k,v) => {
+    const next={...tweaks,[k]:v};
+    setTweaks(next);
+    window.parent.postMessage({type:'__edit_mode_set_keys',edits:next},'*');
+  };
+  const accents = ['#728a9a','#8a9a72','#9a7a8a','#7a9e8a','#9a8a72'];
+  return (
+    <div style={{position:'fixed',bottom:'24px',right:'24px',width:'256px',background:'#fff',border:'1px solid var(--border)',zIndex:9999,boxShadow:'0 12px 48px rgba(0,0,0,.14)',fontFamily:'var(--font-body)'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'13px 17px',borderBottom:'1px solid var(--border)'}}>
+        <span style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.2em',textTransform:'uppercase',color:'var(--muted)'}}>Tweaks</span>
+        <button onClick={onClose} style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',lineHeight:1,fontSize:'14px'}}>✕</button>
+      </div>
+      <div style={{padding:'17px',display:'flex',flexDirection:'column',gap:'16px'}}>
+        <div>
+          <label style={{fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.2em',textTransform:'uppercase',color:'var(--accent)',display:'block',marginBottom:'8px'}}>Couleur d'accent</label>
+          <div style={{display:'flex',gap:'7px'}}>
+            {accents.map(c=>(
+              <button key={c} onClick={()=>{set('accentColor',c);document.documentElement.style.setProperty('--accent',c);}} style={{width:'24px',height:'24px',background:c,border:tweaks.accentColor===c?'2px solid #333':'2px solid transparent',cursor:'pointer',borderRadius:'2px'}}></button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label style={{fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.2em',textTransform:'uppercase',color:'var(--accent)',display:'block',marginBottom:'7px'}}>Bannière urgence</label>
+          <button onClick={()=>set('urgencyBanner',!tweaks.urgencyBanner)} style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.1em',textTransform:'uppercase',padding:'6px 14px',background:tweaks.urgencyBanner?'var(--accent)':'transparent',color:tweaks.urgencyBanner?'#fff':'var(--muted)',border:'1px solid var(--accent-dim)',cursor:'pointer'}}>
+            {tweaks.urgencyBanner?'Affichée':'Masquée'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── APP ── */
+function App() {
+  const [tweaks,setTweaks] = useState(TWEAK_DEFAULTS);
+  const [tweaksVisible,setTweaksVisible] = useState(false);
+  useEffect(()=>{
+    const h = e => {
+      if(e.data?.type==='__activate_edit_mode') setTweaksVisible(true);
+      if(e.data?.type==='__deactivate_edit_mode') setTweaksVisible(false);
+    };
+    window.addEventListener('message',h);
+    window.parent.postMessage({type:'__edit_mode_available'},'*');
+    return ()=>window.removeEventListener('message',h);
+  },[]);
+  useEffect(()=>{
+    document.documentElement.style.setProperty('--accent',tweaks.accentColor);
+  },[tweaks.accentColor]);
+  return (
+    <>
+      <Nav />
+      <Hero />
+      <Trust />
+      <ProblemSolution />
+      <Services />
+      <Why />
+      <Portfolio />
+      <Process />
+      <FinalCTA />
+      <Contact />
+      <Footer />
+      <TweaksPanel tweaks={tweaks} setTweaks={setTweaks} visible={tweaksVisible} onClose={()=>{setTweaksVisible(false);window.parent.postMessage({type:'__edit_mode_dismissed'},'*');}} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
