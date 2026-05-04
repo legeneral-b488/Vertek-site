@@ -56,6 +56,53 @@ const LogoSmall = () => (
   </svg>
 );
 
+/* ── LOGO IMAGE (remplace le SVG si assets/logo.png existe) ── */
+function LogoImg({ size = 40 }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <LogoSmall />;
+  return (
+    <img
+      src="assets/logo.png"
+      alt="Vertek"
+      style={{ height: size, maxWidth: size * 4, objectFit: 'contain', display: 'block' }}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+/* ── ICÔNES ── */
+const Arr = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const Chk = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M2 7l4 4 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const MenuIco = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+const CloseIco = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <path d="M5 5l12 12M17 5L5 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+const MailIco = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.4"/>
+    <path d="M2 7l8 5 8-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+  </svg>
+);
+const PhoneIco = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M4 2h4l2 5-2.5 1.5a11 11 0 005 5L14 11l5 2v4a2 2 0 01-2 2C7.2 19 1 12.8 1 5a2 2 0 012-2h1z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 /* ── GLOBAL CSS ── */
 const css = `
 /* NAV */
@@ -283,7 +330,7 @@ function Nav() {
   return (
     <>
       <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
-        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center',gap:'8px',color:'var(--text)'}}><LogoSmall /></a>
+        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center',gap:'8px',color:'var(--text)'}}><LogoImg size={40} /></a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
         <a href="#contact" className="nav-cta-btn">Demander un devis</a>
         <button className="nav-mob-btn" onClick={()=>setOpen(true)}><MenuIco /></button>
@@ -826,7 +873,7 @@ function Contact() {
 function Footer() {
   return (
     <footer>
-      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoSmall /></a>
+      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoImg size={32} /></a>
       <span className="ftxt">© 2026 Vertek · Drone Photo & Vidéo</span>
       <div className="flinks">
         <a href="#hero">Accueil</a>
