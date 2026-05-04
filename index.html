@@ -160,11 +160,11 @@ const css = `
 .btn-g:hover{color:var(--text);border-color:var(--accent-dim);}
 
 /* TRUST BAR */
-.trust{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 5vw;display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap;}
-.trust-item{display:flex;align-items:center;gap:11px;}
-.trust-val{font-family:var(--font-display);font-size:27px;font-weight:800;color:var(--accent);}
-.trust-lbl{font-size:12px;color:var(--muted);line-height:1.3;max-width:90px;}
-.trust-sep{width:1px;height:36px;background:var(--border);}
+.trust{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:48px 5vw;display:flex;align-items:center;justify-content:center;gap:60px;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:16px;}
+.trust-val{font-family:var(--font-display);font-size:52px;font-weight:800;color:var(--accent);}
+.trust-lbl{font-size:15px;color:var(--muted);line-height:1.35;max-width:120px;}
+.trust-sep{width:1px;height:60px;background:var(--border);}
 
 /* SECTIONS */
 .sec{padding:96px 5vw;}
@@ -234,35 +234,11 @@ const css = `
 .proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;max-width:1060px;margin-left:auto;margin-right:auto;position:relative;}
 .proc-steps::before{content:'';position:absolute;top:29px;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--accent-dim) 20%,var(--accent-dim) 80%,transparent);}
 .proc-step{padding:0 22px 0 0;}
-/* ── HERO DRONES ── */
-@keyframes drone-fly {
-  0%   { transform: translate(8vw,  55px) rotate(-3deg); }
-  100% { transform: translate(8vw,  55px) rotate(-3deg); }
-}
-@keyframes explode-out {
-  0%   { transform: translate(0,0) scale(1); opacity:1; }
-  60%  { opacity:1; }
-  100% { transform: translate(var(--ex), var(--ey)) scale(0.2) rotate(720deg); opacity:0; }
-}
-.drone-exploding { animation: explode-out 0.7s ease-in forwards !important; }
-@keyframes boom-ring {
-  0%   { transform:translate(-50%,-50%) scale(0); opacity:0.9; }
-  100% { transform:translate(-50%,-50%) scale(3); opacity:0; }
-}
-.boom { position:absolute; width:60px; height:60px; border-radius:50%; border:3px solid #ffa040; pointer-events:none; animation: boom-ring 0.6s ease-out forwards; z-index:10; }
-.drone-add-btn {
-  position:absolute; bottom:80px; right:5vw; z-index:5;
-  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.3);
-  color:#fff; font-family:var(--font-display); font-size:11px; letter-spacing:.15em;
-  text-transform:uppercase; padding:8px 16px; cursor:pointer; backdrop-filter:blur(6px);
-  transition:background .2s; display:flex; align-items:center; gap:8px;
-}
-.drone-add-btn:hover { background:rgba(255,255,255,.22); }
-.drone-counter { font-size:14px; font-weight:800; color:#ffd080; }
+/* ── HERO DRONE ── */
 @keyframes prop-spin { to { transform: rotate(360deg); } }
-@keyframes drone-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-.drone-wrap { position:absolute; top:80px; left:0; z-index:3; animation:drone-fly 24s ease-in-out infinite; pointer-events:none; }
-.drone-body { animation:drone-bob 2.4s ease-in-out infinite; filter:drop-shadow(0 4px 12px rgba(0,0,0,.5)); }
+@keyframes drone-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.drone-wrap { position:absolute; z-index:3; pointer-events:none; }
+.drone-body { animation:drone-bob 2.2s ease-in-out infinite; filter:drop-shadow(0 4px 14px rgba(0,0,0,.55)); }
 .prop { transform-origin: 50% 50%; transform-box: fill-box; animation:prop-spin 0.12s linear infinite; }
 
 /* end drone */
@@ -368,16 +344,9 @@ function DroneSVG() {
 }
 
 /* ── HERO ── */
-const FLIGHT_CONFIGS = [
-  { delay:'0s', dur:'24s' },
-];
-
 function Hero() {
   const vidRef = useRef(null);
-  const [fleet, setFleet] = useState([{ id:0, ex:0, ey:0 }]);
-  const [exploding, setExploding] = useState(false);
-  const [showBoom, setShowBoom] = useState(false);
-  const nextId = useRef(1);
+  const [pos, setPos] = useState({ x: 10, y: 80, rot: -3 });
 
   useEffect(() => {
     const v = vidRef.current;
@@ -396,26 +365,21 @@ function Hero() {
     return () => v.removeEventListener('error', tryNext);
   }, []);
 
-  const addDrone = () => {
-    if (exploding) return;
-    if (fleet.length >= 1) {
-      const withDirs = fleet.map(d => ({
-        ...d,
-        ex: (Math.random() - 0.5) * 400,
-        ey: (Math.random() - 0.5) * 300,
-      }));
-      setFleet(withDirs);
-      setExploding(true);
-      setShowBoom(true);
-      setTimeout(() => {
-        setFleet([{ id: nextId.current++, ex:0, ey:0 }]);
-        setExploding(false);
-        setShowBoom(false);
-      }, 900);
-    } else {
-      setFleet(d => [...d, { id: nextId.current++, ex:0, ey:0 }]);
-    }
-  };
+  useEffect(() => {
+    let timerId;
+    const schedule = () => {
+      timerId = setTimeout(() => {
+        setPos({
+          x: 5 + Math.random() * 65,
+          y: 65 + Math.random() * 110,
+          rot: (Math.random() - 0.5) * 22,
+        });
+        schedule();
+      }, 1800 + Math.random() * 2000);
+    };
+    schedule();
+    return () => clearTimeout(timerId);
+  }, []);
 
   return (
     <section className="hero" id="hero">
@@ -426,26 +390,14 @@ function Hero() {
       </div>
       <div className="hero-overlay"></div>
 
-      {fleet.map((drone, i) => {
-        const cfg = FLIGHT_CONFIGS[i % FLIGHT_CONFIGS.length];
-        return (
-          <div key={drone.id}
-            className={`drone-wrap${exploding ? ' drone-exploding' : ''}`}
-            style={exploding
-              ? { '--ex': `${drone.ex}px`, '--ey': `${drone.ey}px` }
-              : { animationDelay: cfg.delay, animationDuration: cfg.dur }
-            }>
-            <div className="drone-body"><DroneSVG /></div>
-          </div>
-        );
-      })}
-
-      {showBoom && <div className="boom" style={{left:'50%', top:'38%'}}></div>}
-
-      <button className="drone-add-btn" onClick={addDrone}>
-        <span>+ Drone</span>
-        <span className="drone-counter">{fleet.length}/7</span>
-      </button>
+      <div className="drone-wrap" style={{
+        left: `${pos.x}vw`,
+        top: `${pos.y}px`,
+        transform: `rotate(${pos.rot}deg)`,
+        transition: 'left 2.2s ease-in-out, top 2s ease-in-out, transform 1.8s ease-in-out',
+      }}>
+        <div className="drone-body"><DroneSVG /></div>
+      </div>
 
       <div className="hero-content">
         <div className="hero-badge">
@@ -542,9 +494,9 @@ function Services() {
       desc:'Agences immobilières, particuliers, promoteurs, marchands de biens',
       apps:['Vente immobilière','Location saisonnière','Promotion neuf','Viager','Résidence secondaire'],
       packs:[
-        {name:'Pack Essentiel',price:'75 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
+        {name:'Pack Essentiel',price:'100 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
         {name:'Pack Complet',price:'190 € HT',altPrice:'140 € HT (rushes bruts)',delay:'72h',feat:true,inc:['15 photos HD + vidéo montée 60–90 s','Montage professionnel inclus','Option rushes bruts disponible']},
-        {name:'Pack Premium',price:'300 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
+        {name:'Pack Premium',price:'250 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
       ],
     },
     {
@@ -569,7 +521,6 @@ function Services() {
       packs:[
         {name:'Demi-journée',price:'400–500 € HT',delay:'5 jours',feat:false,inc:['≤ 4h sur site','Photos HD annotables','Vidéo structurée par zone']},
         {name:'Journée complète',price:'700–900 € HT',delay:'5 jours',feat:true,inc:['8h d\'intervention','Rapport complet par face/défaut','Livraison 5 jours ouvrés']},
-        {name:'Ouvrage supp.',price:'+80–150 € HT',delay:'Inclus',feat:false,inc:['Ouvrage supplémentaire','Même journée','Sur devis final']},
       ],
       note:'Déplacement sur devis · Formation technique spécialisée',
     },
