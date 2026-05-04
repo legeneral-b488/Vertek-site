@@ -43,13 +43,18 @@
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-/* ── ICONS ── */
-const Arr = () => <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const Chk = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const MailIco = () => <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.5" y="3.5" width="15" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1.5 5.5l7.5 5 7.5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>;
-const PhoneIco = () => <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 2.5h3.5l1.5 4-2 1.5a10.5 10.5 0 005 5l1.5-2 4 1.5V16a1.5 1.5 0 01-1.5 1.5C5.5 17.5.5 12.5.5 3.5A1.5 1.5 0 012 2h1z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const MenuIco = () => <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>;
-const CloseIco = () => <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 5l12 12M17 5L5 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>;
+/* ── LOGO ── */
+const LogoSVG = () => (
+  <svg width="48" height="48" viewBox="0 0 400 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 50 80 L 350 80 L 280 180 L 200 280 L 120 180 Z" fill="currentColor" stroke="currentColor" strokeWidth="20" strokeLinejoin="round" strokeLinecap="round"/>
+    <path d="M 140 200 L 200 300 L 260 200" fill="currentColor" stroke="currentColor" strokeWidth="20" strokeLinejoin="round" strokeLinecap="round"/>
+  </svg>
+);
+const LogoSmall = () => (
+  <svg width="32" height="32" viewBox="0 0 400 480" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 50 80 L 350 80 L 280 180 L 200 280 L 120 180 Z M 140 200 L 200 300 L 260 200" fillRule="evenodd"/>
+  </svg>
+);
 
 /* ── GLOBAL CSS ── */
 const css = `
@@ -182,15 +187,9 @@ const css = `
 .proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;max-width:1060px;margin-left:auto;margin-right:auto;position:relative;}
 .proc-steps::before{content:'';position:absolute;top:29px;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--accent-dim) 20%,var(--accent-dim) 80%,transparent);}
 .proc-step{padding:0 22px 0 0;}
-/* DRONE FLEET */
+/* ── HERO DRONES ── */
 @keyframes drone-fly {
   0%   { transform: translate(8vw,  55px) rotate(-3deg); }
-  12%  { transform: translate(28vw, 25px) rotate(4deg); }
-  28%  { transform: translate(52vw, 75px) rotate(-2deg); }
-  44%  { transform: translate(72vw, 35px) rotate(5deg); }
-  58%  { transform: translate(60vw, 95px) rotate(-4deg); }
-  72%  { transform: translate(38vw, 50px) rotate(2deg); }
-  88%  { transform: translate(15vw, 80px) rotate(-4deg); }
   100% { transform: translate(8vw,  55px) rotate(-3deg); }
 }
 @keyframes explode-out {
@@ -284,7 +283,7 @@ function Nav() {
   return (
     <>
       <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
-        <a href="#hero" className="nav-wordmark">Vertek</a>
+        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center',gap:'8px',color:'var(--text)'}}><LogoSmall /></a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
         <a href="#contact" className="nav-cta-btn">Demander un devis</a>
         <button className="nav-mob-btn" onClick={()=>setOpen(true)}><MenuIco /></button>
@@ -323,13 +322,7 @@ function DroneSVG() {
 
 /* ── HERO ── */
 const FLIGHT_CONFIGS = [
-  { delay:'0s',   dur:'24s' },
-  { delay:'-7s',  dur:'19s' },
-  { delay:'-14s', dur:'27s' },
-  { delay:'-3s',  dur:'21s' },
-  { delay:'-11s', dur:'23s' },
-  { delay:'-18s', dur:'28s' },
-  { delay:'-5s',  dur:'20s' },
+  { delay:'0s', dur:'24s' },
 ];
 
 function Hero() {
@@ -358,7 +351,7 @@ function Hero() {
 
   const addDrone = () => {
     if (exploding) return;
-    if (fleet.length >= 7) {
+    if (fleet.length >= 1) {
       const withDirs = fleet.map(d => ({
         ...d,
         ex: (Math.random() - 0.5) * 400,
@@ -502,9 +495,9 @@ function Services() {
       desc:'Agences immobilières, particuliers, promoteurs, marchands de biens',
       apps:['Vente immobilière','Location saisonnière','Promotion neuf','Viager','Résidence secondaire'],
       packs:[
-        {name:'Pack Essentiel',price:'150 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
-        {name:'Pack Complet',price:'380 € HT',altPrice:'280 € HT (rushes bruts)',delay:'72h',feat:true,inc:['15 photos HD + vidéo montée 60–90 s','Montage professionnel inclus','Option rushes bruts disponible']},
-        {name:'Pack Premium',price:'600 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
+        {name:'Pack Essentiel',price:'75 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
+        {name:'Pack Complet',price:'190 € HT',altPrice:'140 € HT (rushes bruts)',delay:'72h',feat:true,inc:['15 photos HD + vidéo montée 60–90 s','Montage professionnel inclus','Option rushes bruts disponible']},
+        {name:'Pack Premium',price:'300 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
       ],
     },
     {
@@ -515,8 +508,8 @@ function Services() {
       desc:'Particuliers, concessionnaires, collectionneurs, loueurs',
       apps:['Voiture de collection','Camping-car / van','Bateau','Moto','Véhicule de prestige'],
       packs:[
-        {name:'Pack Véhicules',price:'180 € HT',delay:'48h',feat:true,inc:['12 photos sous différents angles','Mise en valeur produit','Livraison 48h']},
-        {name:'Option Vidéo',price:'+120 € HT',delay:'72h',feat:false,inc:['Vidéo cinématique 60 s','Mouvement orbital autour du véhicule','Montage inclus']},
+        {name:'Pack Véhicules',price:'90 € HT',delay:'48h',feat:true,inc:['12 photos sous différents angles','Mise en valeur produit','Livraison 48h']},
+        {name:'Option Vidéo',price:'+60 € HT',delay:'72h',feat:false,inc:['Vidéo cinématique 60 s','Mouvement orbital autour du véhicule','Montage inclus']},
       ],
     },
     {
@@ -541,7 +534,7 @@ function Services() {
       desc:'Agriculteurs, coopératives, géomètres',
       apps:['Diagnostic cultures','Cartographie parcelles','Stress hydrique','Suivi récoltes','Grandes surfaces'],
       packs:[
-        {name:'Inspection cultures',price:'250 € HT',delay:'48h',feat:true,inc:['Surface ≤ 50 ha','Photos HD géolocalisées','Livraison 48h']},
+        {name:'Inspection cultures',price:'125 € HT',delay:'48h',feat:true,inc:['Surface ≤ 50 ha','Photos HD géolocalisées','Livraison 48h']},
         {name:'Grandes surfaces',price:'Sur devis',delay:'À définir',feat:false,inc:['> 50 ha ou suivi récurrent','Tarif dégressif','Planification personnalisée']},
       ],
     },
@@ -553,8 +546,18 @@ function Services() {
       desc:'Assurances, coopératives, exploitants agricoles',
       apps:['Constat grêle','Dégâts gel','Inondation','Expertise assurance','Intervention rapide'],
       packs:[
-        {name:'Constat sinistre',price:'350–500 € HT',delay:'Prioritaire',feat:true,inc:['Intervention prioritaire si possible','Rapport détaillé assurance','Grêle, gel, inondation…']},
+        {name:'Constat sinistre',price:'175–250 € HT',delay:'Prioritaire',feat:true,inc:['Intervention prioritaire si possible','Rapport détaillé assurance','Grêle, gel, inondation…']},
       ],
+    },
+    {
+      id:5,
+      icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.4"/><path d="M9 11h4M11 9v4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
+      label:'Autre',
+      color:'#6b5b95',
+      desc:'Un projet unique qui ne correspond à aucune de ces catégories ?',
+      apps:['Projet personnalisé','Concept innovant','Usage non classique','Défi sur mesure'],
+      packs:null,
+      customMsg:true,
     },
   ];
   const cat = cats[activeTab];
@@ -583,20 +586,27 @@ function Services() {
             </div>
           </div>
           {/* Packs */}
-          <div style={{display:'grid',gridTemplateColumns:`repeat(${cat.packs.length},1fr)`,gap:'3px',padding:'3px',background:'var(--border)'}}>
-            {cat.packs.map((p,i)=>(
-              <div key={i} style={{background:'var(--bg3)',padding:'28px 24px',borderTop:`3px solid ${p.feat?cat.color:'transparent'}`,position:'relative'}}>
-                {p.feat&&<div style={{position:'absolute',top:0,right:0,background:cat.color,color:'#fff',fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 10px',fontWeight:700}}>Recommandé</div>}
-                <div style={{fontFamily:'var(--font-display)',fontSize:'17px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{p.name}</div>
-                <div style={{fontFamily:'var(--font-display)',fontSize:'24px',fontWeight:800,color:cat.color,lineHeight:1,marginBottom:'4px'}}>{p.price}</div>
-                {p.altPrice&&<div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'4px'}}>{p.altPrice}</div>}
-                <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'18px',fontFamily:'var(--font-display)',letterSpacing:'.08em',textTransform:'uppercase'}}>Livraison {p.delay}</div>
-                <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-                  {p.inc.map((x,j)=><span key={j} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'var(--muted)'}}><span style={{color:cat.color}}><Chk /></span>{x}</span>)}
+          {cat.customMsg?(
+            <div style={{padding:'48px 36px',textAlign:'center'}}>
+              <p style={{fontSize:'15px',color:'var(--text)',marginBottom:'16px',lineHeight:1.8}}>Ce projet mérite une discussion personnalisée. Contactez-nous pour que nous puissions ensemble explorer les meilleures solutions adaptées à votre vision.</p>
+              <a href="#contact" style={{display:'inline-block',fontFamily:'var(--font-display)',fontSize:'12px',letterSpacing:'.1em',textTransform:'uppercase',padding:'12px 28px',background:cat.color,color:'#fff',fontWeight:700,textDecoration:'none',transition:'background .2s',cursor:'pointer'}} onMouseEnter={(e)=>e.target.style.background=cat.color+'dd'} onMouseLeave={(e)=>e.target.style.background=cat.color}>Discutons de votre projet</a>
+            </div>
+          ):(
+            <div style={{display:'grid',gridTemplateColumns:`repeat(${cat.packs.length},1fr)`,gap:'3px',padding:'3px',background:'var(--border)'}}>
+              {cat.packs.map((p,i)=>(
+                <div key={i} style={{background:'var(--bg3)',padding:'28px 24px',borderTop:`3px solid ${p.feat?cat.color:'transparent'}`,position:'relative'}}>
+                  {p.feat&&<div style={{position:'absolute',top:0,right:0,background:cat.color,color:'#fff',fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 10px',fontWeight:700}}>Recommandé</div>}
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'17px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{p.name}</div>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'24px',fontWeight:800,color:cat.color,lineHeight:1,marginBottom:'4px'}}>{p.price}</div>
+                  {p.altPrice&&<div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'4px'}}>{p.altPrice}</div>}
+                  <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'18px',fontFamily:'var(--font-display)',letterSpacing:'.08em',textTransform:'uppercase'}}>Livraison {p.delay}</div>
+                  <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+                    {p.inc.map((x,j)=><span key={j} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'var(--muted)'}}><span style={{color:cat.color}}><Chk /></span>{x}</span>)}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           {cat.note&&<div style={{padding:'16px 36px',fontSize:'13px',color:'var(--muted)',borderTop:'1px solid var(--border)'}}>{cat.note}</div>}
         </div>
         <div style={{textAlign:'center',marginTop:'32px'}}>
@@ -723,80 +733,6 @@ function Portfolio() {
   );
 }
 
-/* ── APPLICATIONS ── */
-function Applications() {
-  const apps = [
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M4 16h32M13 8v8M27 8v8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="20" cy="26" r="3" stroke="currentColor" strokeWidth="1.3"/><path d="M14 26h3M23 26h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-      tag:'Agriculture',
-      title:'Diagnostic Agricole',
-      desc:'Cartographie de parcelles, détection de stress hydrique, suivi de cultures, état des récoltes. Vue d\'ensemble rapide et précise sur de grandes surfaces.',
-      color:'#5a9e78',
-    },
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><path d="M8 32V16l12-8 12 8v16" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><rect x="15" y="22" width="10" height="10" stroke="currentColor" strokeWidth="1.3"/><path d="M12 16h4M24 16h4M12 24h2M26 24h2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-      tag:'Bâtiment',
-      title:'Devis Façades & Travaux',
-      desc:'Photos et vidéos haute définition pour établir des devis de nettoyage, peinture, ravalement ou rénovation. Accès aux zones en hauteur sans échafaudage.',
-      color:'#e8834a',
-    },
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><path d="M20 6c0 0-8 6-8 14a8 8 0 0016 0c0-8-8-14-8-14z" stroke="currentColor" strokeWidth="1.4"/><path d="M20 20v6M17 23h6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="20" cy="18" r="2" fill="currentColor" opacity=".4"/></svg>,
-      tag:'Environnement',
-      title:'Vérification de Nidification',
-      desc:'Détection de nids d\'oiseaux, insectes ou rongeurs sur toitures, cheminées, structures élevées — sans intervention humaine risquée ni dérangement de la faune.',
-      color:'#4a8ab4',
-    },
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><rect x="3" y="18" width="34" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 18V12M14 18V10M20 18V8M26 18V10M32 18V12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M3 26l4 6M37 26l-4 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
-      tag:'Infrastructures',
-      title:'Contrôle Visuel en Direct',
-      desc:'Inspection live via retour vidéo temps réel : ponts, pylônes, voies ferrées, mâts, toitures industrielles. Diagnostic immédiat sans immobilisation longue.',
-      color:'#9a7a5a',
-    },
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><path d="M6 32L20 10l14 22H6z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M14 32v-6h12v6" stroke="currentColor" strokeWidth="1.3"/><circle cx="20" cy="20" r="2" fill="currentColor" opacity=".4"/></svg>,
-      tag:'Énergie',
-      title:'Inspection Panneaux Solaires',
-      desc:'Contrôle de l\'état des installations photovoltaïques, détection de panneaux endommagés, ombrage ou encrassement. Bilan rapide sur toute une toiture ou champ solaire.',
-      color:'#d4a030',
-    },
-    {
-      icon:<svg viewBox="0 0 40 40" fill="none" width="36" height="36"><circle cx="20" cy="20" r="14" stroke="currentColor" strokeWidth="1.4"/><path d="M20 12v8l5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/><path d="M8 20h3M29 20h3M20 8v3M20 29v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-      tag:'Et plus encore',
-      title:'Sur-Mesure & Autre',
-      desc:'Événements sportifs ou culturels, communication d\'entreprise, cartographie, promotion touristique, chantiers BTP… Chaque besoin mérite une solution adaptée.',
-      color:'#7a5a9a',
-    },
-  ];
-
-  return (
-    <section className="sec" id="applications" style={{background:'var(--bg)'}}>
-      <div style={{maxWidth:'1160px',margin:'0 auto'}}>
-        <div className="sec-lbl">Applications</div>
-        <h2 className="sec-title">Ce que le drone peut faire pour vous</h2>
-        <p className="sec-sub">Bien au-delà de l'immobilier — le drone est un outil de travail polyvalent.</p>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'3px',marginTop:'48px',maxWidth:'1160px',marginLeft:'auto',marginRight:'auto'}}>
-        {apps.map((a,i)=>(
-          <div key={i} style={{background:'var(--bg3)',padding:'36px 32px',borderTop:`3px solid ${a.color}`,transition:'box-shadow .3s'}}
-            onMouseEnter={e=>e.currentTarget.style.boxShadow='0 8px 32px rgba(0,0,0,.08)'}
-            onMouseLeave={e=>e.currentTarget.style.boxShadow='none'}>
-            <div style={{color:a.color,marginBottom:'18px'}}>{a.icon}</div>
-            <div style={{fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.22em',textTransform:'uppercase',color:a.color,marginBottom:'8px'}}>{a.tag}</div>
-            <div style={{fontFamily:'var(--font-display)',fontSize:'18px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{a.title}</div>
-            <p style={{fontSize:'13px',color:'var(--muted)',lineHeight:1.7}}>{a.desc}</p>
-          </div>
-        ))}
-      </div>
-      <div style={{textAlign:'center',marginTop:'36px'}}>
-        <a href="#contact" className="btn btn-p">Parlez-moi de votre besoin <Arr /></a>
-      </div>
-    </section>
-  );
-}
-
-
 /* ── PROCESS ── */
 function Process() {
   const steps = [
@@ -843,9 +779,6 @@ function FinalCTA() {
 
 /* ── CONTACT ── */
 function Contact() {
-  const [sent,setSent] = useState(false);
-  const [f,setF] = useState({name:'',email:'',phone:'',service:'',msg:''});
-  const up = (k,v) => setF(p=>({...p,[k]:v}));
   return (
     <section className="sec" id="contact" style={{background:'var(--bg)'}}>
       <div style={{maxWidth:'1060px',margin:'0 auto'}}>
@@ -879,44 +812,10 @@ function Contact() {
           </div>
         </div>
         <div>
-          {sent ? (
-            <div className="fok">
-              <div style={{fontFamily:'var(--font-display)',fontSize:'28px',color:'var(--accent)',marginBottom:'10px'}}>✓</div>
-              <div style={{fontFamily:'var(--font-display)',fontSize:'18px',fontWeight:700,textTransform:'uppercase',marginBottom:'8px',color:'var(--text)'}}>Message envoyé</div>
-              <p style={{fontSize:'14px',color:'var(--muted)'}}>Merci ! Je vous réponds dans les 24h.</p>
-            </div>
-          ) : (
-            <form className="cform" onSubmit={e=>{
-              e.preventDefault();
-              const subject = encodeURIComponent(`Demande de devis Vertek — ${f.name}`);
-              const body = encodeURIComponent(
-                `Nom : ${f.name}\nEmail : ${f.email}\nTéléphone : ${f.phone}\nPrestation : ${f.service}\n\nMessage :\n${f.msg}`
-              );
-              window.location.href = `mailto:vertek.contact@gmail.com?subject=${subject}&body=${body}`;
-              setSent(true);
-            }}>
-              <div className="frow">
-                <div className="ffield"><label>Nom</label><input required placeholder="Votre nom" value={f.name} onChange={e=>up('name',e.target.value)} /></div>
-                <div className="ffield"><label>Email</label><input type="email" required placeholder="votre@email.com" value={f.email} onChange={e=>up('email',e.target.value)} /></div>
-              </div>
-              <div className="frow">
-                <div className="ffield"><label>Téléphone</label><input type="tel" placeholder="06 xx xx xx xx" value={f.phone} onChange={e=>up('phone',e.target.value)} /></div>
-                <div className="ffield">
-                  <label>Prestation</label>
-                  <select value={f.service} onChange={e=>up('service',e.target.value)}>
-                    <option value="">Sélectionner…</option>
-                    <option>Reportage immobilier</option>
-                    <option>Pack immobilier complet</option>
-                    <option>Événement</option>
-                    <option>Commercial / Artisan</option>
-                    <option>Sur-mesure</option>
-                  </select>
-                </div>
-              </div>
-              <div className="ffield"><label>Message</label><textarea required placeholder="Décrivez votre projet, le lieu, vos contraintes…" value={f.msg} onChange={e=>up('msg',e.target.value)}></textarea></div>
-              <button type="submit" className="btn btn-p" style={{width:'100%'}}>Envoyer ma demande <Arr /></button>
-            </form>
-          )}
+          <button className="btn btn-p" style={{width:'100%',fontSize:'16px',padding:'16px 30px'}} onClick={()=>window.location.href='mailto:vertek.contact@gmail.com'}>
+            Nous contacter par email
+          </button>
+          <p style={{marginTop:'18px',fontSize:'14px',color:'var(--muted)',textAlign:'center'}}>Cliquez pour nous écrire directement depuis votre client email.</p>
         </div>
       </div>
     </section>
@@ -927,7 +826,7 @@ function Contact() {
 function Footer() {
   return (
     <footer>
-      <a href="#hero" className="footer-wm">Vertek</a>
+      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoSmall /></a>
       <span className="ftxt">© 2026 Vertek · Drone Photo & Vidéo</span>
       <div className="flinks">
         <a href="#hero">Accueil</a>
