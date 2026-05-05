@@ -2,22 +2,47 @@
  * ================================================================
  *  GALERIE VERTEK — fichier de configuration
  * ================================================================
- *  1. Glisse tes photos/vidéos dans le dossier "uploads/"
- *  2. Ajoute une entrée ci-dessous avec le nom exact du fichier
- *  3. Sauvegarde et recharge le site — c'est tout !
  *
- *  Champs disponibles :
- *    file  : nom exact du fichier dans uploads/  (obligatoire)
- *    type  : "photo" ou "video"                  (obligatoire)
- *    tag   : catégorie affichée en haut          (obligatoire)
+ *  VIDÉOS → renseigner le champ "src" avec l'URL GitHub LFS :
+ *    https://media.githubusercontent.com/media/legeneral-b488/Vertek-site/main/uploads/NOM%20DU%20FICHIER.mp4
+ *    (remplace les espaces par %20 dans l'URL)
+ *
+ *  PHOTOS → mettre le fichier dans uploads/ et indiquer son nom dans "file".
+ *           Pas besoin de "src" pour les photos.
+ *
+ *  Champs :
+ *    file  : nom du fichier (pour l'affichage du titre)    (obligatoire)
+ *    type  : "photo" ou "video"                            (obligatoire)
+ *    tag   : catégorie affichée sur la vignette            (obligatoire)
+ *    src   : URL complète — obligatoire pour les vidéos LFS
  * ================================================================
  */
+
+const LFS = 'https://media.githubusercontent.com/media/legeneral-b488/Vertek-site/main/uploads/';
+
 window.GALLERY = [
+
+  /* ── VIDÉOS (GitHub LFS) ── */
   {
-    file: 'cercle.MP4',
+    file: 'Vente voiture.mp4',
     type: 'video',
-    tag:  'Vidéo',
+    tag:  'Véhicules',
+    src:  LFS + 'Vente%20voiture.mp4',
   },
+  {
+    file: 'voiture.mp4',
+    type: 'video',
+    tag:  'Véhicules',
+    src:  LFS + 'voiture.mp4',
+  },
+  {
+    file: 'Vente Maison.MP4',
+    type: 'video',
+    tag:  'Immobilier',
+    src:  LFS + 'Vente%20Maison.MP4',
+  },
+
+  /* ── PHOTOS (dossier uploads/) ── */
   {
     file: 'Inspection Toiture.JPG',
     type: 'photo',
@@ -53,14 +78,14 @@ window.GALLERY = [
     type: 'photo',
     tag:  'Inspection',
   },
+
+  /* ── Pour ajouter une nouvelle vidéo LFS :
   {
-    file: 'antenne.mp4',
+    file: 'mon-vol.mp4',
     type: 'video',
-    tag:  'Vidéo',
+    tag:  'Inspection',
+    src:  LFS + 'mon-vol.mp4',
   },
-  {
-    file: 'voiture.mp4',
-    type: 'video',
-    tag:  'Véhicules',
-  },
+  ── */
+
 ];

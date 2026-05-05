@@ -698,8 +698,8 @@ function Portfolio() {
     lbl: nameOf(item.file),
     type: item.tag,
     ...(item.type === 'video'
-      ? { video: `uploads/${encodeURIComponent(item.file)}` }
-      : { img: `uploads/${encodeURIComponent(item.file)}` }),
+      ? { video: item.src || `uploads/${encodeURIComponent(item.file)}` }
+      : { img: item.src || `uploads/${encodeURIComponent(item.file)}` }),
   }));
   return (
     <section className="sec" id="portfolio" style={{background:'var(--bg2)'}}>
