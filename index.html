@@ -306,7 +306,9 @@ function Nav() {
   return (
     <>
       <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
-        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center',gap:'8px',color:'var(--text)'}}><LogoImg size={40} /></a>
+        <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center'}}>
+          <img src="assets/logo.png" alt="Vertek" style={{height:'52px',maxWidth:'220px',objectFit:'contain',filter:(onHero&&!scrolled)?'drop-shadow(0 0 8px rgba(255,255,255,.5))':'drop-shadow(0 2px 5px rgba(0,0,0,.18))',transition:'filter .35s'}} onError={e=>e.target.style.display='none'} />
+        </a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
         <a href="#contact" className="nav-cta-btn">Demander un devis</a>
         <button className="nav-mob-btn" onClick={()=>setOpen(true)}><MenuIco /></button>
@@ -366,19 +368,25 @@ function Hero() {
   }, []);
 
   useEffect(() => {
-    let timerId;
-    const schedule = () => {
-      timerId = setTimeout(() => {
-        setPos({
-          x: 5 + Math.random() * 65,
-          y: 65 + Math.random() * 110,
-          rot: (Math.random() - 0.5) * 22,
-        });
-        schedule();
-      }, 1800 + Math.random() * 2000);
+    let rafId;
+    let lastTime = null;
+    let angle = 0;
+    const animate = (timestamp) => {
+      if (lastTime !== null) {
+        const delta = (timestamp - lastTime) / 1000;
+        angle += 0.55 * delta;
+      }
+      lastTime = timestamp;
+      const centerY = window.innerHeight * 0.42;
+      setPos({
+        x: 50 + 24 * Math.cos(angle),
+        y: centerY + 58 * Math.sin(angle),
+        rot: -Math.sin(angle) * 18,
+      });
+      rafId = requestAnimationFrame(animate);
     };
-    schedule();
-    return () => clearTimeout(timerId);
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
@@ -394,12 +402,22 @@ function Hero() {
         left: `${pos.x}vw`,
         top: `${pos.y}px`,
         transform: `rotate(${pos.rot}deg)`,
-        transition: 'left 2.2s ease-in-out, top 2s ease-in-out, transform 1.8s ease-in-out',
       }}>
         <div className="drone-body"><DroneSVG /></div>
       </div>
 
       <div className="hero-content">
+        <div style={{
+          fontFamily:'var(--font-display)',
+          fontSize:'clamp(72px,16vw,180px)',
+          fontWeight:800,
+          letterSpacing:'.14em',
+          textTransform:'uppercase',
+          color:'#fff',
+          lineHeight:1,
+          marginBottom:'22px',
+          textShadow:'0 2px 50px rgba(0,0,0,.45)',
+        }}>VERTEK</div>
         <div className="hero-badge">
           <span className="hero-dot"></span>
           Certifié A1 · DJI Mini 4 Pro · Disponible maintenant
@@ -662,19 +680,26 @@ function Why() {
 /* ── PORTFOLIO ── */
 function Portfolio() {
   const raw = (window.GALLERY && window.GALLERY.length > 0) ? window.GALLERY : [
-    {file:'DJI_20240412193357_0126_D.JPG',type:'photo',label:'Vue aérienne — Vertek',tag:'Photo',large:true},
-    {file:'pasted-1777023291134-0.png',type:'photo',label:'Champs de colza',tag:'Diagnostic Agricole'},
-    {file:'nettoyage-panneaux-solaires.jpg',type:'photo',label:'Panneaux solaires',tag:'Inspection'},
-    {file:'photographie-aerienne-par-drone-d-un-propriete.jpg',type:'photo',label:'Immobilier & Maisons',tag:'Photo Aérienne'},
-    {file:'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',type:'photo',label:'Contrôle Pont',tag:'Infrastructure'},
+    {file:'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',type:'photo',tag:'Infrastructure'},
   ];
-  const cells = raw.map(item => ({
-    lbl: item.label,
+
+  const shuffled = React.useMemo(() => {
+    const arr = [...raw];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, []);
+
+  const nameOf = file => file.replace(/\.[^.]+$/, '');
+
+  const cells = shuffled.map(item => ({
+    lbl: nameOf(item.file),
     type: item.tag,
-    large: !!item.large,
     ...(item.type === 'video'
-      ? { video: `uploads/${item.file}` }
-      : { img: `uploads/${item.file}` }),
+      ? { video: `uploads/${encodeURIComponent(item.file)}` }
+      : { img: `uploads/${encodeURIComponent(item.file)}` }),
   }));
   return (
     <section className="sec" id="portfolio" style={{background:'var(--bg2)'}}>
@@ -809,11 +834,20 @@ function Contact() {
             ))}
           </div>
         </div>
-        <div>
-          <a href="mailto:vertek.contact@gmail.com" className="btn btn-p" style={{width:'100%',fontSize:'16px',padding:'16px 30px',justifyContent:'center'}}>
-            Nous contacter par email
+        <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+          <a href="mailto:vertek.contact@gmail.com"
+             style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+                     padding:'32px 24px',background:'var(--accent)',color:'#fff',textDecoration:'none',gap:'6px'}}>
+            <span style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.22em',textTransform:'uppercase',opacity:.8}}>Email</span>
+            <span style={{fontFamily:'var(--font-display)',fontSize:'clamp(14px,2.2vw,20px)',fontWeight:800,letterSpacing:'.02em',wordBreak:'break-all'}}>vertek.contact@gmail.com</span>
           </a>
-          <p style={{marginTop:'18px',fontSize:'14px',color:'var(--muted)',textAlign:'center'}}>Cliquez pour nous écrire directement depuis votre client email.</p>
+          <a href="tel:+33695742516"
+             style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+                     padding:'32px 24px',background:'var(--bg3)',color:'var(--text)',textDecoration:'none',
+                     border:'2px solid var(--accent)',gap:'6px'}}>
+            <span style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)'}}>Téléphone</span>
+            <span style={{fontFamily:'var(--font-display)',fontSize:'clamp(22px,4vw,38px)',fontWeight:800,letterSpacing:'.08em',color:'var(--accent)'}}>06 95 74 25 16</span>
+          </a>
         </div>
       </div>
     </section>

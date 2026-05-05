@@ -3,64 +3,64 @@
  *  GALERIE VERTEK — fichier de configuration
  * ================================================================
  *  1. Glisse tes photos/vidéos dans le dossier "uploads/"
- *  2. Ajoute une entrée ci-dessous avec le nom du fichier
+ *  2. Ajoute une entrée ci-dessous avec le nom exact du fichier
  *  3. Sauvegarde et recharge le site — c'est tout !
  *
  *  Champs disponibles :
- *    file  : nom du fichier dans uploads/  (obligatoire)
- *    type  : "photo" ou "video"            (obligatoire)
- *    label : titre affiché sur la vignette (obligatoire)
- *    tag   : catégorie affichée en haut    (obligatoire)
- *    large : true pour la grande case      (1 seul max)
+ *    file  : nom exact du fichier dans uploads/  (obligatoire)
+ *    type  : "photo" ou "video"                  (obligatoire)
+ *    tag   : catégorie affichée en haut          (obligatoire)
  * ================================================================
  */
 window.GALLERY = [
   {
-    file:  'DJI_20240412193357_0126_D.JPG',
-    type:  'photo',
-    label: 'Vue aérienne — Vertek',
-    tag:   'Photo',
-    large: true,
+    file: 'cercle.MP4',
+    type: 'video',
+    tag:  'Vidéo',
   },
   {
-    file:  'pasted-1777023291134-0.png',
-    type:  'photo',
-    label: 'Champs de colza',
-    tag:   'Diagnostic Agricole',
+    file: 'Inspection Toiture.JPG',
+    type: 'photo',
+    tag:  'Inspection',
   },
   {
-    file:  'nettoyage-panneaux-solaires.jpg',
-    type:  'photo',
-    label: 'Panneaux solaires',
-    tag:   'Inspection',
+    file: 'Annonce voiture .JPG',
+    type: 'photo',
+    tag:  'Véhicules',
   },
   {
-    file:  'photographie-aerienne-par-drone-d-un-propriete.jpg',
-    type:  'photo',
-    label: 'Immobilier & Maisons',
-    tag:   'Photo Aérienne',
+    file: 'Diagnostique Inondation.JPG',
+    type: 'photo',
+    tag:  'Sinistre',
   },
   {
-    file:  'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',
-    type:  'photo',
-    label: 'Contrôle Pont',
-    tag:   'Infrastructure',
-  },
-
-  /* ── Exemples à décommenter quand tu ajoutes tes propres fichiers ──
-
-  {
-    file:  'mon-chantier.jpg',
-    type:  'photo',
-    label: 'Chantier industriel',
-    tag:   'Inspection',
+    file: 'Annonce moto.JPG',
+    type: 'photo',
+    tag:  'Véhicules',
   },
   {
-    file:  'survol-maison.mp4',
-    type:  'video',
-    label: 'Villa — Lyon',
-    tag:   'Immobilier',
+    file: 'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',
+    type: 'photo',
+    tag:  'Infrastructure',
   },
-
-  ──────────────────────────────────────────────────────────────── */
+  {
+    file: 'Diagnostique impact environnementale.JPG',
+    type: 'photo',
+    tag:  'Diagnostic',
+  },
+  {
+    file: 'inspection bachage.JPG',
+    type: 'photo',
+    tag:  'Inspection',
+  },
+  {
+    file: 'antenne.mp4',
+    type: 'video',
+    tag:  'Vidéo',
+  },
+  {
+    file: 'voiture.mp4',
+    type: 'video',
+    tag:  'Véhicules',
+  },
 ];
