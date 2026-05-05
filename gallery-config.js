@@ -4,21 +4,21 @@
  * ================================================================
  *
  *  VIDÉOS → renseigner le champ "src" avec l'URL GitHub LFS :
- *    https://media.githubusercontent.com/media/legeneral-b488/Vertek-site/main/uploads/NOM%20DU%20FICHIER.mp4
+ *    https://raw.githubusercontent.com/legeneral-b488/Vertek-site/main/uploads/NOM%20FICHIER.mp4
  *    (remplace les espaces par %20 dans l'URL)
  *
  *  PHOTOS → mettre le fichier dans uploads/ et indiquer son nom dans "file".
  *           Pas besoin de "src" pour les photos.
  *
  *  Champs :
- *    file  : nom du fichier (pour l'affichage du titre)    (obligatoire)
- *    type  : "photo" ou "video"                            (obligatoire)
- *    tag   : catégorie affichée sur la vignette            (obligatoire)
+ *    file  : nom du fichier (utilisé pour le titre affiché)  (obligatoire)
+ *    type  : "photo" ou "video"                              (obligatoire)
+ *    tag   : catégorie affichée sur la vignette              (obligatoire)
  *    src   : URL complète — obligatoire pour les vidéos LFS
  * ================================================================
  */
 
-const LFS = 'https://media.githubusercontent.com/media/legeneral-b488/Vertek-site/main/uploads/';
+const LFS = 'https://raw.githubusercontent.com/legeneral-b488/Vertek-site/main/uploads/';
 
 window.GALLERY = [
 
@@ -79,7 +79,7 @@ window.GALLERY = [
     tag:  'Inspection',
   },
 
-  /* ── Pour ajouter une nouvelle vidéo LFS :
+  /* ── Pour ajouter une vidéo LFS :
   {
     file: 'mon-vol.mp4',
     type: 'video',
