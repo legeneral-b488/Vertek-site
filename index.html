@@ -6,7 +6,7 @@
   <title>Vertek — Drone Photo & Vidéo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -314,7 +314,7 @@ function Nav() {
     <>
       <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
         <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center'}}>
-          <img src="assets/Logo.png" alt="Vertek" style={{height:'52px',maxWidth:'220px',objectFit:'contain',filter:(onHero&&!scrolled)?'drop-shadow(0 0 8px rgba(255,255,255,.5))':'drop-shadow(0 2px 5px rgba(0,0,0,.18))',transition:'filter .35s'}} onError={e=>e.target.style.display='none'} />
+          <img src="assets/Logo.png" alt="Vertek" style={{height:'65px',maxWidth:'260px',objectFit:'contain',filter:(onHero&&!scrolled)?'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,.4))':'drop-shadow(0 1px 4px rgba(0,0,0,.15))',transition:'filter .35s'}} onError={e=>e.target.style.display='none'} />
         </a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
         <a href="#contact" className="nav-cta-btn">Demander un devis</a>
@@ -418,25 +418,15 @@ function Hero() {
 
       <div className="hero-content">
         <div ref={vertekRef} style={{
-          fontFamily:'var(--font-display)',
-          fontSize:'clamp(72px,16vw,180px)',
-          fontWeight:800,
-          letterSpacing:'.14em',
+          fontFamily:"'Bebas Neue', var(--font-display)",
+          fontSize:'clamp(80px,17vw,190px)',
+          fontWeight:400,
+          letterSpacing:'.12em',
           textTransform:'uppercase',
-          color:'#1c1a14',
+          color:'#fff',
           lineHeight:1,
           marginBottom:'22px',
-          textShadow:`
-            0 1px 0 #b0ada6,
-            0 2px 0 #9e9b94,
-            0 3px 0 #8c8982,
-            0 4px 0 #7a7770,
-            0 5px 0 #68655e,
-            0 6px 2px rgba(0,0,0,.25),
-            0 10px 14px rgba(0,0,0,.35),
-            0 18px 30px rgba(0,0,0,.2),
-            -1px -1px 0 rgba(255,255,255,.12)
-          `,
+          textShadow:'0 2px 50px rgba(0,0,0,.55), 0 0 80px rgba(0,0,0,.3)',
         }}>VERTEK</div>
         <div className="hero-badge">
           <span className="hero-dot"></span>
@@ -922,7 +912,7 @@ function Contact() {
 function Footer() {
   return (
     <footer>
-      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoImg size={32} /></a>
+      <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoImg size={40} /></a>
       <span className="ftxt">© 2026 Vertek · Drone Photo & Vidéo</span>
       <div className="flinks">
         <a href="#hero">Accueil</a>
