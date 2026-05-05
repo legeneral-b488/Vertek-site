@@ -3,22 +3,21 @@
  *  GALERIE VERTEK — fichier de configuration
  * ================================================================
  *
- *  VIDÉOS → renseigner le champ "src" avec l'URL GitHub LFS :
- *    https://raw.githubusercontent.com/legeneral-b488/Vertek-site/main/uploads/NOM%20FICHIER.mp4
- *    (remplace les espaces par %20 dans l'URL)
+ *  VIDÉOS LFS → champ "src" obligatoire avec l'URL GitHub :
+ *    https://github.com/legeneral-b488/Vertek-site/raw/main/uploads/NOM%20FICHIER.mp4
+ *    (remplace les espaces par %20, respecte la casse exacte du fichier)
  *
- *  PHOTOS → mettre le fichier dans uploads/ et indiquer son nom dans "file".
- *           Pas besoin de "src" pour les photos.
+ *  PHOTOS → mettre le fichier dans uploads/, renseigner "file" avec le nom exact.
  *
  *  Champs :
- *    file  : nom du fichier (utilisé pour le titre affiché)  (obligatoire)
+ *    file  : nom exact du fichier (utilisé pour le titre)    (obligatoire)
  *    type  : "photo" ou "video"                              (obligatoire)
  *    tag   : catégorie affichée sur la vignette              (obligatoire)
- *    src   : URL complète — obligatoire pour les vidéos LFS
+ *    src   : URL complète GitHub — obligatoire pour les vidéos LFS
  * ================================================================
  */
 
-const LFS = 'https://raw.githubusercontent.com/legeneral-b488/Vertek-site/main/uploads/';
+const LFS = 'https://github.com/legeneral-b488/Vertek-site/raw/main/uploads/';
 
 window.GALLERY = [
 
@@ -30,16 +29,16 @@ window.GALLERY = [
     src:  LFS + 'Vente%20voiture.mp4',
   },
   {
-    file: 'voiture.mp4',
-    type: 'video',
-    tag:  'Véhicules',
-    src:  LFS + 'voiture.mp4',
-  },
-  {
-    file: 'Vente Maison.MP4',
+    file: 'Vente maison.MP4',
     type: 'video',
     tag:  'Immobilier',
-    src:  LFS + 'Vente%20Maison.MP4',
+    src:  LFS + 'Vente%20maison.MP4',
+  },
+  {
+    file: 'antenne.mp4',
+    type: 'video',
+    tag:  'Vidéo',
+    src:  LFS + 'antenne.mp4',
   },
 
   /* ── PHOTOS (dossier uploads/) ── */

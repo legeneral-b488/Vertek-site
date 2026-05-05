@@ -56,13 +56,13 @@ const LogoSmall = () => (
   </svg>
 );
 
-/* ── LOGO IMAGE (remplace le SVG si assets/logo.png existe) ── */
+/* ── LOGO IMAGE (remplace le SVG si assets/Logo.png existe) ── */
 function LogoImg({ size = 40 }) {
   const [failed, setFailed] = useState(false);
   if (failed) return <LogoSmall />;
   return (
     <img
-      src="assets/logo.png"
+      src="assets/Logo.png"
       alt="Vertek"
       style={{ height: size, maxWidth: size * 4, objectFit: 'contain', display: 'block' }}
       onError={() => setFailed(true)}
@@ -312,7 +312,7 @@ function Nav() {
     <>
       <nav className={`nav ${scrolled?'scrolled':''} ${onHero?'on-hero':''}`}>
         <a href="#hero" className="nav-wordmark" style={{display:'flex',alignItems:'center'}}>
-          <img src="assets/logo.png" alt="Vertek" style={{height:'52px',maxWidth:'220px',objectFit:'contain',filter:(onHero&&!scrolled)?'drop-shadow(0 0 8px rgba(255,255,255,.5))':'drop-shadow(0 2px 5px rgba(0,0,0,.18))',transition:'filter .35s'}} onError={e=>e.target.style.display='none'} />
+          <img src="assets/Logo.png" alt="Vertek" style={{height:'52px',maxWidth:'220px',objectFit:'contain',filter:(onHero&&!scrolled)?'drop-shadow(0 0 8px rgba(255,255,255,.5))':'drop-shadow(0 2px 5px rgba(0,0,0,.18))',transition:'filter .35s'}} onError={e=>e.target.style.display='none'} />
         </a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h} className="nav-link">{l}</a></li>)}</ul>
         <a href="#contact" className="nav-cta-btn">Demander un devis</a>
