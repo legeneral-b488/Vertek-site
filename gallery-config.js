@@ -35,10 +35,10 @@ window.GALLERY = [
     src:  LFS + 'Vente%20maison.MP4',
   },
   {
-    file: 'antenne.mp4',
+    file: 'Inspection antenne.mp4',
     type: 'video',
-    tag:  'Vidéo',
-    src:  LFS + 'antenne.mp4',
+    tag:  'Inspection',
+    src:  LFS + 'Inspection%20antenne.mp4',
   },
 
   /* ── PHOTOS (dossier uploads/) ── */
@@ -63,9 +63,9 @@ window.GALLERY = [
     tag:  'Véhicules',
   },
   {
-    file: 'INSPECTION-PONTS-PAR-DRONE-DRONE-ON-AIR.jpg',
+    file: "Inspection ouvrage d'art.jpg",
     type: 'photo',
-    tag:  'Infrastructure',
+    tag:  'Inspection',
   },
   {
     file: 'Diagnostique impact environnementale.JPG',
