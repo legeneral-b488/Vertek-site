@@ -284,9 +284,12 @@ const css = `
 footer{background:#1c1a14;padding:32px 5vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 .footer-wm{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;}
 .ftxt{font-size:13px;color:rgba(255,255,255,.35);}
-.flinks{display:flex;gap:22px;}
+.flinks{display:flex;gap:22px;align-items:center;}
 .flinks a{font-family:var(--font-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;}
 .flinks a:hover{color:rgba(255,255,255,.75);}
+.footer-legal{font-size:11px;color:rgba(255,255,255,.22);width:100%;text-align:center;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);}
+.footer-legal a{color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;}
+.footer-legal a:hover{color:rgba(255,255,255,.7);}
 `;
 const styleEl = document.createElement('style');
 styleEl.textContent = css;
@@ -955,11 +958,15 @@ function Footer() {
   return (
     <footer>
       <a href="#hero" className="footer-wm" style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'20px'}}><LogoImg size={40} /></a>
-      <span className="ftxt">© 2026 Vertek · Drone Photo & Vidéo</span>
+      <span className="ftxt">© 2026 Vertek · Drone Photo &amp; Vidéo</span>
       <div className="flinks">
         <a href="#hero">Accueil</a>
         <a href="#services">Services</a>
         <a href="#contact">Contact</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+      <div className="footer-legal">
+        VERILHAC Jules EI &nbsp;·&nbsp; SIRET 104 416 284 000 16 &nbsp;·&nbsp; TVA non applicable, art. 293 B du CGI &nbsp;·&nbsp; <a href="mentions-legales.html">Mentions légales</a>
       </div>
     </footer>
   );
