@@ -454,7 +454,6 @@ function Hero() {
 /* ── TRUST ── */
 function Trust() {
   const items = [
-    {v:'2 ans',l:'Expérience\nprofessionnelle'},
     {v:'A1',l:'Certification\neuropéenne'},
     {v:'<250g',l:'Drone léger\npolyvalent'},
     {v:'24h',l:'Réponse\ngarantie'},
@@ -522,10 +521,10 @@ function Services() {
       desc:'Agences immobilières, particuliers, promoteurs, marchands de biens',
       apps:['Vente immobilière','Location saisonnière','Promotion neuf','Viager','Résidence secondaire'],
       packs:[
-        {name:'Pack Essentiel',price:'100 € HT',delay:'48h',feat:false,inc:['10 photos HD retouchées','Haute résolution 4K','Livraison sous 48h']},
-        {name:'Pack Complet',price:'190 € HT',altPrice:'140 € HT (rushes bruts)',delay:'72h',feat:true,inc:['15 photos HD + vidéo montée 60–90 s','Montage professionnel inclus','Option rushes bruts disponible']},
-        {name:'Pack Premium',price:'250 € HT',delay:'96h',feat:false,inc:['20 photos + vidéo cinématique 2 min','Montage haut de gamme','Livraison 96h']},
+        {name:'Pack Essentiel',price:'Sur devis',feat:false,inc:['Tarif selon nombre de photos / vidéos','Haute résolution 4K','Adapté à votre projet']},
+        {name:'Pack Complet',price:'150 € HT',feat:true,inc:['15 photos HD','Vidéo montée 60–90 s']},
       ],
+      retainer:true,
     },
     {
       id:1,
@@ -535,8 +534,8 @@ function Services() {
       desc:'Particuliers, concessionnaires, collectionneurs, loueurs',
       apps:['Voiture de collection','Camping-car / van','Bateau','Moto','Véhicule de prestige'],
       packs:[
-        {name:'Pack Véhicules',price:'90 € HT',delay:'48h',feat:true,inc:['12 photos sous différents angles','Mise en valeur produit','Livraison 48h']},
-        {name:'Option Vidéo',price:'+60 € HT',delay:'72h',feat:false,inc:['Vidéo cinématique 60 s','Mouvement orbital autour du véhicule','Montage inclus']},
+        {name:'Pack Photos',price:'90 € HT',feat:true,inc:['12 photos sous différents angles','Mise en valeur produit']},
+        {name:'Option Vidéo',price:'+60 € HT',feat:false,inc:['Vidéo cinématique 60 s','Mouvement orbital autour du véhicule']},
       ],
     },
     {
@@ -544,13 +543,7 @@ function Services() {
       icon:<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.4"/><path d="M11 7v4l3 2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
       label:'Diagnostic & Inspection',
       color:'#e8834a',
-      desc:'Collectivités, BTP, syndics, gestionnaires d\'ouvrages, assurances',
-      apps:['Toiture / façade','Ponts & ouvrages','Voies ferrées','Pylônes / mâts','Devis ravalement','Nidification'],
-      packs:[
-        {name:'Demi-journée',price:'400–500 € HT',delay:'5 jours',feat:false,inc:['≤ 4h sur site','Photos HD annotables','Vidéo structurée par zone']},
-        {name:'Journée complète',price:'700–900 € HT',delay:'5 jours',feat:true,inc:['8h d\'intervention','Rapport complet par face/défaut','Livraison 5 jours ouvrés']},
-      ],
-      note:'Déplacement sur devis · Formation technique spécialisée',
+      customDiag:true,
     },
     {
       id:3,
@@ -560,8 +553,8 @@ function Services() {
       desc:'Agriculteurs, coopératives, géomètres',
       apps:['Diagnostic cultures','Cartographie parcelles','Stress hydrique','Suivi récoltes','Grandes surfaces'],
       packs:[
-        {name:'Inspection cultures',price:'125 € HT',delay:'48h',feat:true,inc:['Surface ≤ 50 ha','Photos HD géolocalisées','Livraison 48h']},
-        {name:'Grandes surfaces',price:'Sur devis',delay:'À définir',feat:false,inc:['> 50 ha ou suivi récurrent','Tarif dégressif','Planification personnalisée']},
+        {name:'Inspection cultures',price:'125 € HT',feat:true,inc:['Surface ≤ 50 ha','Photos HD géolocalisées']},
+        {name:'Grandes surfaces',price:'Sur devis',feat:false,inc:['> 50 ha ou suivi récurrent','Tarif dégressif','Planification personnalisée']},
       ],
     },
     {
@@ -572,7 +565,7 @@ function Services() {
       desc:'Assurances, coopératives, exploitants agricoles',
       apps:['Constat grêle','Dégâts gel','Inondation','Expertise assurance','Intervention rapide'],
       packs:[
-        {name:'Constat sinistre',price:'175–250 € HT',delay:'Prioritaire',feat:true,inc:['Intervention prioritaire si possible','Rapport détaillé assurance','Grêle, gel, inondation…']},
+        {name:'Constat sinistre',price:'175–250 € HT',showDelay:true,delay:'Prioritaire',feat:true,inc:['Intervention prioritaire si possible','Rapport + analyse des images','Grêle, gel, inondation…']},
       ],
     },
     {
@@ -587,13 +580,13 @@ function Services() {
     },
   ];
   const cat = cats[activeTab];
+  const tagStyle = (color) => ({fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.2em',textTransform:'uppercase',padding:'4px 10px',background:`${color}18`,color:color,display:'inline-block'});
   return (
     <section className="sec" id="services" style={{background:'var(--bg2)'}}>
       <div style={{maxWidth:'1160px',margin:'0 auto'}}>
         <div className="sec-lbl">Services & Tarifs</div>
         <h2 className="sec-title">Ce que je propose</h2>
-        <p className="sec-sub">Trois domaines d'expertise, des tarifs clairs.</p>
-        {/* Tabs */}
+        <p className="sec-sub">Des tarifs clairs pour chaque besoin.</p>
         <div style={{display:'flex',gap:'3px',marginTop:'36px',flexWrap:'wrap'}}>
           {cats.map(c=>(
             <button key={c.id} onClick={()=>setActiveTab(c.id)} style={{display:'flex',alignItems:'center',gap:'9px',padding:'13px 22px',fontFamily:'var(--font-display)',fontSize:'13px',fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',border:'none',cursor:'pointer',background:activeTab===c.id?c.color:'var(--bg3)',color:activeTab===c.id?'#fff':c.color,transition:'all .2s',borderBottom:activeTab===c.id?`3px solid ${c.color}`:'3px solid transparent'}}>
@@ -602,38 +595,88 @@ function Services() {
             </button>
           ))}
         </div>
-        {/* Content */}
         <div style={{background:'var(--bg3)',padding:'0',marginTop:'3px'}}>
-          <div style={{padding:'32px 36px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'flex-start',justifyContent:'space-between',flexWrap:'wrap',gap:'16px'}}>
-            <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+          {/* Apps tags — masqué pour Diagnostic */}
+          {!cat.customDiag && cat.apps && (
+            <div style={{padding:'32px 36px',borderBottom:'1px solid var(--border)',display:'flex',gap:'8px',flexWrap:'wrap'}}>
               {cat.apps.map((a,i)=>(
                 <span key={i} style={{fontFamily:'var(--font-display)',fontSize:'11px',letterSpacing:'.1em',textTransform:'uppercase',padding:'4px 10px',background:`${cat.color}18`,color:cat.color,borderRadius:'2px'}}>{a}</span>
               ))}
             </div>
-          </div>
-          {/* Packs */}
-          {cat.customMsg?(
-            <div style={{padding:'48px 36px',textAlign:'center'}}>
-              <p style={{fontSize:'15px',color:'var(--text)',marginBottom:'16px',lineHeight:1.8}}>Ce projet mérite une discussion personnalisée. Contactez-nous pour que nous puissions ensemble explorer les meilleures solutions adaptées à votre vision.</p>
-              <a href="#contact" style={{display:'inline-block',fontFamily:'var(--font-display)',fontSize:'12px',letterSpacing:'.1em',textTransform:'uppercase',padding:'12px 28px',background:cat.color,color:'#fff',fontWeight:700,textDecoration:'none',transition:'background .2s',cursor:'pointer'}} onMouseEnter={(e)=>e.target.style.background=cat.color+'dd'} onMouseLeave={(e)=>e.target.style.background=cat.color}>Discutons de votre projet</a>
-            </div>
-          ):(
-            <div style={{display:'grid',gridTemplateColumns:`repeat(${cat.packs.length},1fr)`,gap:'3px',padding:'3px',background:'var(--border)'}}>
-              {cat.packs.map((p,i)=>(
-                <div key={i} style={{background:'var(--bg3)',padding:'28px 24px',borderTop:`3px solid ${p.feat?cat.color:'transparent'}`,position:'relative'}}>
-                  {p.feat&&<div style={{position:'absolute',top:0,right:0,background:cat.color,color:'#fff',fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 10px',fontWeight:700}}>Recommandé</div>}
-                  <div style={{fontFamily:'var(--font-display)',fontSize:'17px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{p.name}</div>
-                  <div style={{fontFamily:'var(--font-display)',fontSize:'24px',fontWeight:800,color:cat.color,lineHeight:1,marginBottom:'4px'}}>{p.price}</div>
-                  {p.altPrice&&<div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'4px'}}>{p.altPrice}</div>}
-                  <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'18px',fontFamily:'var(--font-display)',letterSpacing:'.08em',textTransform:'uppercase'}}>Livraison {p.delay}</div>
-                  <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-                    {p.inc.map((x,j)=><span key={j} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'var(--muted)'}}><span style={{color:cat.color}}><Chk /></span>{x}</span>)}
-                  </div>
+          )}
+
+          {/* Diagnostic & Inspection — affichage custom */}
+          {cat.customDiag && (
+            <div>
+              <div style={{padding:'32px 36px',borderBottom:'1px solid var(--border)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'14px'}}>
+                  <span style={tagStyle(cat.color)}>PRO</span>
+                  <span style={{fontSize:'13px',color:'var(--muted)'}}>Industriel · Collectivités · Grands groupes</span>
                 </div>
-              ))}
+                <p style={{fontSize:'14px',color:'var(--muted)',lineHeight:1.75,marginBottom:'10px'}}>
+                  Interventions en milieux contraints : ouvrages d'art, voies ferrées, pylônes, façades industrielles.
+                </p>
+                <p style={{fontSize:'14px',color:'var(--text)',fontWeight:600,marginBottom:'18px'}}>
+                  Titulaire de la formation <strong>SECUFER</strong> — habilitation pour les interventions à proximité des voies ferrées.
+                </p>
+                <a href="#contact" className="btn btn-p" style={{fontSize:'13px',padding:'11px 24px'}}>Demander un devis PRO <Arr /></a>
+              </div>
+              <div style={{padding:'32px 36px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'14px'}}>
+                  <span style={tagStyle(cat.color)}>PARTICULIER</span>
+                  <span style={{fontSize:'13px',color:'var(--muted)'}}>Toiture · Façade · Autre</span>
+                </div>
+                <div style={{display:'flex',alignItems:'baseline',gap:'10px',marginBottom:'6px'}}>
+                  <span style={{fontFamily:'var(--font-display)',fontSize:'30px',fontWeight:800,color:cat.color,lineHeight:1}}>150 € TTC</span>
+                  <span style={{fontSize:'13px',color:'var(--muted)'}}>selon surface et quantité · sous devis</span>
+                </div>
+                <p style={{fontSize:'14px',color:'var(--muted)',lineHeight:1.75,marginBottom:'18px'}}>
+                  Inspection visuelle complète avec photos HD. Tarif variable selon l'accessibilité et l'étendue du chantier.
+                </p>
+                <a href="#contact" className="btn btn-d" style={{fontSize:'13px',padding:'11px 24px'}}>Demander un devis <Arr /></a>
+              </div>
             </div>
           )}
-          {cat.note&&<div style={{padding:'16px 36px',fontSize:'13px',color:'var(--muted)',borderTop:'1px solid var(--border)'}}>{cat.note}</div>}
+
+          {/* Packs standard */}
+          {!cat.customDiag && !cat.customMsg && cat.packs && (
+            <>
+              <div style={{display:'grid',gridTemplateColumns:`repeat(${cat.packs.length},1fr)`,gap:'3px',padding:'3px',background:'var(--border)'}}>
+                {cat.packs.map((p,i)=>(
+                  <div key={i} style={{background:'var(--bg3)',padding:'28px 24px',borderTop:`3px solid ${p.feat?cat.color:'transparent'}`,position:'relative'}}>
+                    {p.feat&&<div style={{position:'absolute',top:0,right:0,background:cat.color,color:'#fff',fontFamily:'var(--font-display)',fontSize:'10px',letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 10px',fontWeight:700}}>Recommandé</div>}
+                    <div style={{fontFamily:'var(--font-display)',fontSize:'17px',fontWeight:700,textTransform:'uppercase',marginBottom:'12px',color:'var(--text)'}}>{p.name}</div>
+                    <div style={{fontFamily:'var(--font-display)',fontSize:'24px',fontWeight:800,color:cat.color,lineHeight:1,marginBottom:p.showDelay?'4px':'18px'}}>{p.price}</div>
+                    {p.showDelay&&<div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'18px',fontFamily:'var(--font-display)',letterSpacing:'.08em',textTransform:'uppercase'}}>Délai : {p.delay}</div>}
+                    <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+                      {p.inc.map((x,j)=><span key={j} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'var(--muted)'}}><span style={{color:cat.color}}><Chk /></span>{x}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Retainer — Immobilier uniquement */}
+              {cat.retainer && (
+                <div style={{padding:'28px 36px',borderTop:'1px solid var(--border)'}}>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'15px',fontWeight:700,textTransform:'uppercase',letterSpacing:'.04em',color:'var(--text)',marginBottom:'8px'}}>Partenariat Multi-Biens</div>
+                  <p style={{fontSize:'14px',color:'var(--muted)',lineHeight:1.7,marginBottom:'14px'}}>Vous gérez plusieurs biens ? Discutons d'un retainer mensuel adapté à votre volume.</p>
+                  <a href="#contact" className="btn btn-p" style={{fontSize:'13px',padding:'11px 24px',marginBottom:'14px',display:'inline-flex'}}>Me contacter pour un retainer <Arr /></a>
+                  <p style={{fontSize:'12px',color:'var(--muted)',fontStyle:'italic',lineHeight:1.9,marginTop:'4px'}}>
+                    À titre indicatif — tarifs à définir ensemble selon vos besoins :<br/>
+                    Formule Essentiel – ex. jusqu'à 5 biens/mois → ~450 €/mois<br/>
+                    Formule Partenaire – ex. jusqu'à 10 biens/mois → ~850 €/mois
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Autre — message personnalisé */}
+          {cat.customMsg && (
+            <div style={{padding:'48px 36px',textAlign:'center'}}>
+              <p style={{fontSize:'15px',color:'var(--text)',marginBottom:'16px',lineHeight:1.8}}>Ce projet mérite une discussion personnalisée. Contactez-nous pour que nous puissions ensemble explorer les meilleures solutions adaptées à votre vision.</p>
+              <a href="#contact" style={{display:'inline-block',fontFamily:'var(--font-display)',fontSize:'12px',letterSpacing:'.1em',textTransform:'uppercase',padding:'12px 28px',background:cat.color,color:'#fff',fontWeight:700,textDecoration:'none'}}>Discutons de votre projet</a>
+            </div>
+          )}
         </div>
         <div style={{textAlign:'center',marginTop:'32px'}}>
           <a href="#contact" className="btn btn-p">Simuler mon devis <Arr /></a>
@@ -659,11 +702,10 @@ function Why() {
       badge:'Tarifs transparents',
     },
     {
-      icon:<svg className="why-ico" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M6 18h36M16 10v8M32 10v8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M14 28h8M26 28h8M14 34h6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
-      title:'Expérience Grands Groupes',
-      body:'2 ans d\'expérience terrain en milieu industriel et ferroviaire. Missions réalisées pour des groupes exigeants, avec contraintes de sécurité strictes, délais serrés et environnements complexes.',
-      badge:'SNCF · Grands comptes',
-      logos: true,
+      icon:<svg className="why-ico" viewBox="0 0 48 48" fill="none"><path d="M24 6L10 13v10c0 8.5 5.9 16.4 14 18.6C32.1 39.4 38 31.5 38 23V13L24 6z" stroke="currentColor" strokeWidth="1.4" fill="none"/><path d="M18 24l4 4 8-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+      title:'Sécurité Avant Tout',
+      body:'Formé pour intervenir dans des environnements à risques : milieux ferroviaires (habilitation SECUFER) et zones industrielles contraintes. Rigueur professionnelle et protocoles de sécurité à chaque mission.',
+      badge:'SECUFER · Milieux industriels',
     },
   ];
   return (
@@ -986,7 +1028,6 @@ function App() {
       <Nav />
       <Hero />
       <Trust />
-      <ProblemSolution />
       <Services />
       <Why />
       <Portfolio />
