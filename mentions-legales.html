@@ -7,148 +7,89 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/favicon.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #F7F5F2;
-      --surface: #FFFFFF;
-      --ink: #1A1A18;
-      --muted: #6B6B67;
-      --accent: #5a7a4a;
-      --rule: #E2DED8;
-      --tag-bg: #EAF0EC;
-      --tag-txt: #3a5a2a;
+      --bg:      #faf7f1;
+      --surface: #ffffff;
+      --ink:     #1c1a14;
+      --muted:   #857f72;
+      --accent:  #5a9e78;
+      --rule:    #e8e3da;
+      --tag-bg:  #eaf3ee;
+      --tag-txt: #3a6e52;
+      --alert:   #c0392b;
     }
-
     body {
       background: var(--bg);
       color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Barlow', sans-serif;
       font-weight: 300;
       line-height: 1.7;
       min-height: 100vh;
       padding: 60px 20px;
     }
+    .wrapper { max-width: 740px; margin: 0 auto; }
 
-    .wrapper { max-width: 720px; margin: 0 auto; }
-
-    /* Back link */
     .back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent);
-      text-decoration: none;
-      margin-bottom: 40px;
-      letter-spacing: .04em;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--accent);
+      text-decoration: none; margin-bottom: 40px; letter-spacing: .04em;
       transition: opacity .2s;
     }
     .back:hover { opacity: .7; }
-    .back svg { flex-shrink: 0; }
 
-    /* Header */
-    .header {
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 32px;
-      margin-bottom: 48px;
-    }
-
+    .header { border-bottom: 1px solid var(--rule); padding-bottom: 32px; margin-bottom: 48px; }
     .label {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--tag-txt);
-      background: var(--tag-bg);
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 16px;
+      display: inline-block; font-size: 11px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--tag-txt);
+      background: var(--tag-bg); padding: 4px 10px; border-radius: 4px; margin-bottom: 16px;
     }
-
     h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 400;
-      letter-spacing: .06em;
-      line-height: 1.1;
-      color: var(--ink);
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* Sections */
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--rule);
-      border-radius: 12px;
-      padding: 28px 32px;
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.10em;
+      font-family: 'Barlow Condensed', sans-serif; font-size: clamp(38px,6vw,58px);
+      font-weight: 700; letter-spacing: .04em; line-height: 1.05; margin-bottom: 10px;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
-      padding-bottom: 12px;
+    }
+    .subtitle { font-size: 13px; color: var(--muted); }
+
+    .section {
+      background: var(--surface); border: 1px solid var(--rule);
+      border-radius: 10px; padding: 28px 32px; margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 11px; font-weight: 500; letter-spacing: .10em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 20px; padding-bottom: 12px;
       border-bottom: 1px solid var(--rule);
     }
-
     .field {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 8px 16px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--rule);
-      font-size: 15px;
-      align-items: start;
+      display: grid; grid-template-columns: 220px 1fr;
+      gap: 8px 16px; padding: 10px 0; border-bottom: 1px solid var(--rule);
+      font-size: 15px; align-items: start;
     }
     .field:last-child { border-bottom: none; }
-
-    .field-label {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-      padding-top: 1px;
-    }
-
+    .field-label { color: var(--muted); font-size: 13px; font-weight: 500; padding-top: 1px; }
     .field-value { color: var(--ink); }
+    .placeholder { color: var(--alert); font-style: italic; font-size: 13px; }
 
     .mention-block {
-      background: var(--tag-bg);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 16px 20px;
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--tag-txt);
-      font-style: italic;
-      line-height: 1.65;
+      background: var(--tag-bg); border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin-top: 16px;
+      font-size: 13px; color: var(--tag-txt); font-style: italic; line-height: 1.65;
+    }
+    .alert-block {
+      background: #fdf2f2; border-left: 3px solid var(--alert);
+      border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 14px;
+      font-size: 13px; color: #7a2020; line-height: 1.65;
     }
 
     .prose { font-size: 15px; color: var(--ink); line-height: 1.75; }
     .prose p { margin-bottom: 12px; }
     .prose p:last-child { margin-bottom: 0; }
 
-    /* Footer note */
     .footer-note {
-      margin-top: 40px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-      border-top: 1px solid var(--rule);
-      padding-top: 24px;
+      margin-top: 40px; font-size: 12px; color: var(--muted);
+      text-align: center; border-top: 1px solid var(--rule); padding-top: 24px;
     }
 
     @media (max-width: 600px) {
@@ -161,14 +102,16 @@
   <div class="wrapper">
 
     <a href="index.html" class="back">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
       Retour au site
     </a>
 
     <div class="header">
       <span class="label">Obligations légales</span>
       <h1>Mentions légales</h1>
-      <p class="subtitle">Conformément à la loi n°2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN)</p>
+      <p class="subtitle">Conformément à la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN)</p>
     </div>
 
     <!-- 1. Éditeur -->
@@ -204,12 +147,13 @@
         <span class="field-value">vertek.contact@gmail.com</span>
       </div>
       <div class="field">
-        <span class="field-label">TVA</span>
+        <span class="field-label">Régime TVA</span>
         <span class="field-value">Non assujetti — TVA non applicable, art. 293 B du CGI</span>
       </div>
 
       <div class="mention-block">
-        Entrepreneur individuel (EI) — conformément à l'article L. 526-5-1 du Code de commerce, cette mention figure sur l'ensemble des documents commerciaux (devis, factures, publicités).
+        Entrepreneur individuel (EI) — conformément à l'article L. 526-5-1 du Code de commerce,
+        cette mention figure sur l'ensemble des documents commerciaux (devis, factures, publicités).
       </div>
     </div>
 
@@ -222,18 +166,82 @@
         <span class="field-value">Direction générale de l'Aviation civile (DGAC)</span>
       </div>
       <div class="field">
-        <span class="field-label">Attestation</span>
-        <span class="field-value">Télépilote sous-catégories A1 / A3 (règlement UE 2019/947)</span>
+        <span class="field-label">Attestation télépilote</span>
+        <span class="field-value">Sous-catégories A1 / A3 (règlement UE 2019/947)</span>
       </div>
       <div class="field">
-        <span class="field-label">Habilitation</span>
-        <span class="field-value">SECUFER — intervention en milieux ferroviaires et zones industrielles à risques</span>
+        <span class="field-label">N° opérateur UAS DGAC</span>
+        <span class="field-value" id="uas-number">FRA-RP-000000146240</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Habilitation SECUFER</span>
+        <span class="field-value">Intervention en milieux ferroviaires et zones industrielles à risques</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Validité des certifications</span>
+        <span class="field-value">Valides jusqu'en 2034</span>
+      </div>
+
+      <div class="mention-block">
+        Toute opération de drone est réalisée dans le respect des réglementations DGAC en vigueur,
+        des arrêtés de restrictions de vol (ZRT, CTR, NOTAM) et des autorisations préfectorales
+        requises selon les zones géographiques d'intervention.
       </div>
     </div>
 
-    <!-- 3. Hébergement -->
+    <!-- 3. Assurance -->
     <div class="section">
-      <div class="section-title">3 · Hébergement du site</div>
+      <div class="section-title">3 · Assurance responsabilité civile professionnelle</div>
+
+      <div class="prose">
+        <p>
+          Conformément à l'article 16 du règlement d'exécution (UE) 2019/947 de la Commission,
+          Vertek est couvert par une assurance de responsabilité civile professionnelle (RC Pro)
+          pour les dommages causés aux tiers dans le cadre des opérations avec aéronef sans pilote
+          à bord (UAS).
+        </p>
+        <p>
+          Cette assurance couvre les dommages corporels, matériels et immatériels pouvant survenir
+          lors des vols de drone dans un cadre commercial.
+        </p>
+      </div>
+
+      <div class="mention-block">
+        Les détails de la police d'assurance sont disponibles sur demande pour les clients et partenaires.
+      </div>
+    </div>
+
+    <!-- 4. Droit à l'image et vie privée -->
+    <div class="section">
+      <div class="section-title">4 · Droit à l'image — Captations par drone</div>
+
+      <div class="prose">
+        <p>
+          Les prises de vue aériennes réalisées par drone peuvent, de manière incidente, capturer
+          des personnes ou des propriétés privées situées dans le champ de l'objectif.
+          Vertek s'engage à respecter strictement la vie privée des tiers lors de chaque intervention.
+        </p>
+        <p>
+          <strong>Règles appliquées :</strong>
+        </p>
+        <p>
+          • Les survols de propriétés privées nécessitent l'accord préalable des propriétaires concernés.<br/>
+          • Aucune image identifiante de personnes physiques n'est publiée sans leur consentement écrit,
+          conformément à l'article 9 du Code civil et à l'article 226-1 du Code pénal.<br/>
+          • Les images captant des tiers de manière involontaire sont floutées ou supprimées avant livraison
+          au client.<br/>
+          • Le client est seul responsable de l'usage des images qui lui sont livrées.
+        </p>
+        <p>
+          En commandant une prestation, le client atteste avoir obtenu les autorisations nécessaires
+          pour les prises de vue sur le site concerné (propriétaire, gestionnaire, etc.).
+        </p>
+      </div>
+    </div>
+
+    <!-- 5. Hébergement -->
+    <div class="section">
+      <div class="section-title">5 · Hébergement du site</div>
 
       <div class="field">
         <span class="field-label">Hébergeur</span>
@@ -249,37 +257,85 @@
       </div>
     </div>
 
-    <!-- 4. Propriété intellectuelle -->
+    <!-- 6. Propriété intellectuelle -->
     <div class="section">
-      <div class="section-title">4 · Propriété intellectuelle</div>
+      <div class="section-title">6 · Propriété intellectuelle</div>
       <div class="prose">
-        <p>L'ensemble des contenus présents sur ce site (photographies, vidéos, textes, logos) sont la propriété exclusive de VERILHAC Jules, sauf mention contraire. Toute reproduction, représentation, modification ou exploitation, totale ou partielle, sans autorisation préalable et écrite, est strictement interdite.</p>
-        <p>Les photographies et vidéos réalisées dans le cadre de prestations commerciales sont cédées au client selon les conditions définies dans le devis ou contrat signé.</p>
+        <p>
+          L'ensemble des contenus présents sur ce site (photographies, vidéos, textes, logo) sont la propriété
+          exclusive de VERILHAC Jules, sauf mention contraire. Toute reproduction, représentation,
+          modification ou exploitation, totale ou partielle, sans autorisation préalable et écrite,
+          est strictement interdite (articles L.111-1 et suivants du Code de la propriété intellectuelle).
+        </p>
+        <p>
+          Les photographies et vidéos réalisées dans le cadre de prestations commerciales sont cédées
+          au client selon les conditions définies dans le devis ou contrat signé. La cession de droits
+          est limitée à l'usage précisé dans le devis ; toute autre utilisation requiert un accord écrit.
+        </p>
       </div>
     </div>
 
-    <!-- 5. Données personnelles -->
+    <!-- 7. Données personnelles -->
     <div class="section">
-      <div class="section-title">5 · Données personnelles &amp; cookies</div>
+      <div class="section-title">7 · Données personnelles &amp; cookies</div>
       <div class="prose">
-        <p>Conformément au Règlement Général sur la Protection des Données (RGPD — UE 2016/679) et à la loi Informatique et Libertés du 6 janvier 1978 modifiée, vous disposez d'un droit d'accès, de rectification, d'opposition et de suppression de vos données personnelles.</p>
-        <p>Les données transmises via le formulaire de contact (nom, email, message) sont utilisées uniquement pour répondre à votre demande et ne sont transmises à aucun tiers.</p>
-        <p>Ce site ne dépose aucun cookie de traçage ou de publicité.</p>
-        <p>Pour exercer vos droits : <a href="mailto:vertek.contact@gmail.com" style="color:var(--accent)">vertek.contact@gmail.com</a></p>
+        <p>
+          Conformément au Règlement Général sur la Protection des Données (RGPD — UE 2016/679)
+          et à la loi Informatique et Libertés du 6 janvier 1978 modifiée, vous disposez d'un droit
+          d'accès, de rectification, d'opposition, de limitation et de suppression de vos données personnelles.
+        </p>
+        <p>
+          Les données transmises via le formulaire de contact ou par email (nom, email, message)
+          sont utilisées uniquement pour répondre à votre demande et sont conservées pendant une durée
+          maximale de 3 ans. Elles ne sont transmises à aucun tiers.
+        </p>
+        <p>
+          Ce site ne dépose aucun cookie de traçage, de publicité ni d'analyse comportementale.
+        </p>
+        <p>
+          Pour exercer vos droits ou poser toute question relative à vos données :
+          <a href="mailto:vertek.contact@gmail.com" style="color:var(--accent)">vertek.contact@gmail.com</a>
+        </p>
       </div>
     </div>
 
-    <!-- 6. Médiation -->
+    <!-- 8. Médiation -->
     <div class="section">
-      <div class="section-title">6 · Médiation de la consommation</div>
+      <div class="section-title">8 · Médiation de la consommation</div>
       <div class="prose">
-        <p>Conformément à l'article L. 612-1 du Code de la consommation, en cas de litige non résolu à l'amiable avec un client particulier (consommateur), vous pouvez recourir gratuitement à un médiateur de la consommation agréé.</p>
-        <p>La liste des médiateurs agréés est disponible sur le site de la Commission d'Évaluation et de Contrôle de la Médiation de la Consommation (CECMC) : <a href="https://www.economie.gouv.fr/mediation-conso" target="_blank" rel="noopener" style="color:var(--accent)">economie.gouv.fr/mediation-conso</a></p>
+        <p>
+          Conformément à l'article L. 612-1 du Code de la consommation, en cas de litige non résolu
+          à l'amiable avec un client particulier (consommateur), vous pouvez recourir gratuitement
+          à un médiateur de la consommation agréé.
+        </p>
+        <p>
+          La liste des médiateurs agréés est disponible sur le site de la Commission d'Évaluation
+          et de Contrôle de la Médiation de la Consommation (CECMC) :
+          <a href="https://www.economie.gouv.fr/mediation-conso" target="_blank" rel="noopener" style="color:var(--accent)">
+            economie.gouv.fr/mediation-conso
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- 9. Limitation de responsabilité -->
+    <div class="section">
+      <div class="section-title">9 · Limitation de responsabilité</div>
+      <div class="prose">
+        <p>
+          Les images, vidéos et rapports fournis par Vertek constituent un complément visuel destiné
+          à appuyer une expertise professionnelle. Ils ne constituent en aucun cas un rapport d'ingénierie,
+          une expertise structurelle certifiée, ni un document réglementaire opposable.
+        </p>
+        <p>
+          Vertek ne saurait être tenu responsable de décisions prises par le client sur la base
+          exclusive des livrables fournis, sans avoir recours à un expert qualifié le cas échéant.
+        </p>
       </div>
     </div>
 
     <div class="footer-note">
-      Dernière mise à jour : mai 2026 &nbsp;·&nbsp; VERILHAC Jules EI &nbsp;·&nbsp; SIRET 104 416 284 000 16
+      Dernière mise à jour : juin 2026 &nbsp;·&nbsp; VERILHAC Jules EI &nbsp;·&nbsp; SIRET 104 416 284 000 16
     </div>
 
   </div>
