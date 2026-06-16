@@ -7,20 +7,16 @@ function PanelImmo() {
   const packs = [
     {
       name: 'Essentiel',
-      price: '150 €',
       items: ['5 photos aériennes retouchées', 'Livraison sous 48h', 'Fichiers haute résolution'],
     },
     {
       name: 'Type',
-      price: '380 €',
-      alt: 'ou 280 € — rushes bruts non montés',
       feat: true,
       tag: 'Le plus demandé',
       items: ['10 photos aériennes retouchées', '1 vidéo aérienne montée (~60 s)', 'Musique libre de droits', 'Livraison sous 48h'],
     },
     {
       name: 'Signature',
-      price: '500 €',
       items: ['15 photos aériennes retouchées', 'Plusieurs vidéos montées', 'Visite guidée aérienne', 'Livraison express 24h'],
     },
   ];
@@ -42,9 +38,6 @@ function PanelImmo() {
           <div key={i} className={`lux-card${p.feat ? ' feat' : ''}`}>
             {p.feat && <div className="lux-tag">{p.tag}</div>}
             <div className="lux-name">{p.name}</div>
-            <div className="lux-price">{p.price}</div>
-            {p.alt && <div className="lux-alt">{p.alt}</div>}
-            <div className="lux-tva">{TVA}</div>
             <div className="lux-inc">
               {p.items.map((x, j) => (
                 <span key={j}>
