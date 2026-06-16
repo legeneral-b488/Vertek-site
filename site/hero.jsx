@@ -92,43 +92,76 @@ function DroneSVG() {
 function DroneScanner({ active }) {
   const unitRef = useRef(null);
   const [scanning, setScanning] = useState(false);
-  const timerRef = useRef(null);
 
   useEffect(() => {
     if (!active) return;
     const unit = unitRef.current;
     if (!unit) return;
 
-    const waypoints = [
-      { x: 14, y: 22 }, { x: 70, y: 14 }, { x: 55, y: 58 },
-      { x: 22, y: 65 }, { x: 80, y: 44 }, { x: 38, y: 28 },
-      { x: 8,  y: 50 }, { x: 62, y: 30 },
-    ];
-    let idx = 0;
+    // Centre de l'orbite = position du titre VERTEK (centré, ~42% vertical)
+    const CX = 50, CY = 42, RX = 36, RY = 22;
 
-    const go = () => {
-      const pt = waypoints[idx % waypoints.length];
-      idx++;
-      unit.style.left = `${pt.x}%`;
-      unit.style.top  = `${pt.y}%`;
-      setScanning(false);
-      timerRef.current = setTimeout(() => {
+    let angle = -Math.PI / 2; // départ en haut
+    let orbitPaused = false;
+    let lastTs = null;
+    let rafId;
+    let timer;
+
+    const schedulePause = () => {
+      timer = setTimeout(() => {
+        orbitPaused = true;
         setScanning(true);
-        timerRef.current = setTimeout(go, 2100);
-      }, 2800);
+        timer = setTimeout(() => {
+          orbitPaused = false;
+          setScanning(false);
+          schedulePause();
+        }, 1400 + Math.random() * 1600); // pause 1.4–3 s
+      }, 3000 + Math.random() * 4000);   // intervalle 3–7 s
     };
 
-    unit.style.left = `${waypoints[0].x}%`;
-    unit.style.top  = `${waypoints[0].y}%`;
-    timerRef.current = setTimeout(go, 1200);
-    return () => clearTimeout(timerRef.current);
+    schedulePause();
+
+    const tick = (ts) => {
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min((ts - lastTs) / 1000, 0.05);
+      lastTs = ts;
+
+      if (!orbitPaused) {
+        // Vitesse légèrement variable pour un vol organique
+        angle += (0.28 + 0.06 * Math.sin(angle * 3)) * dt;
+      }
+
+      const x = CX + RX * Math.cos(angle);
+      const y = CY + RY * Math.sin(angle);
+      unit.style.left = `${x}%`;
+      unit.style.top  = `${y}%`;
+
+      // Oriente le cône vers le titre VERTEK
+      const hero = document.getElementById('hero');
+      if (hero) {
+        const W = hero.offsetWidth, H = hero.offsetHeight;
+        const dX = (CX - x) / 100 * W;
+        const dY = (CY - y) / 100 * H;
+        const rot = Math.atan2(dY, dX) * 180 / Math.PI;
+        const cone = unit.querySelector('.scan-cone');
+        if (cone) {
+          cone.style.transformOrigin = '0px 55px';
+          cone.style.transform = `rotate(${rot}deg)`;
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(rafId); clearTimeout(timer); };
   }, [active]);
 
   if (!active) return null;
 
   return (
     <div className="drone-scanner">
-      <div ref={unitRef} className={`drone-unit${scanning ? ' scanning' : ''}`}>
+      <div ref={unitRef} className={`drone-unit${scanning ? ' scanning' : ''}`} style={{ transition: 'none' }}>
         <div className="drone-svg-wrap"><DroneSVG /></div>
         <svg className="scan-cone" width="180" height="110" viewBox="0 0 180 110">
           <defs>
