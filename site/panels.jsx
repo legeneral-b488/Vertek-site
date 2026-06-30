@@ -81,13 +81,10 @@ function PanelImmo() {
 /* ── INSPECTION & DIAGNOSTIQUE ── */
 function PanelInsp() {
   const RATE_SURFACE = 0.15;
-  const RATE_KM     = 0.50;
-  const KM_FRANCHISE = 20;
 
   const [forfaitIdx, setForfaitIdx] = React.useState(0);
   const [nbVideos,   setNbVideos]   = React.useState(0);
   const [surface,    setSurface]    = React.useState('');
-  const [distance,   setDistance]   = React.useState('');
 
   const forfaits = [
     { name: 'Repérage',          price: 120,  desc: 'Survol + photos HD + rapport de reconnaissance. Photos uniquement.', hasVideo: true },
@@ -97,15 +94,11 @@ function PanelInsp() {
 
   const f        = forfaits[forfaitIdx];
   const isDevis  = f.price === null;
-  const surfaceVal  = parseFloat(surface)  || 0;
-  const distanceVal = parseFloat(distance) || 0;
-  const totalKm     = distanceVal * 2;
-  const kmBeyond    = Math.max(0, totalKm - KM_FRANCHISE);
+  const surfaceVal  = parseFloat(surface) || 0;
 
   const videoPrice   = (f.hasVideo && !isDevis) ? nbVideos * 50 : 0;
   const surfacePrice = !isDevis ? Math.round(surfaceVal * RATE_SURFACE * 100) / 100 : 0;
-  const deplacement  = !isDevis ? Math.round(kmBeyond  * RATE_KM      * 100) / 100 : 0;
-  const total        = !isDevis ? (f.price + videoPrice + surfacePrice + deplacement) : 0;
+  const total        = !isDevis ? (f.price + videoPrice + surfacePrice) : 0;
 
   const fmt = n => Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ',');
 
@@ -114,15 +107,8 @@ function PanelInsp() {
     lines.push({ lbl: f.name, val: `${f.price} €` });
     if (videoPrice > 0) lines.push({ lbl: `Vidéo ×${nbVideos}`, val: `+${videoPrice} €` });
     if (surfacePrice > 0) lines.push({ lbl: `Surface (${fmt(surfaceVal)} m²)`, val: `+${fmt(surfacePrice)} €` });
-    if (distanceVal > 0 && kmBeyond === 0) lines.push({ lbl: 'Déplacement', val: 'Offert' });
-    if (deplacement > 0) lines.push({ lbl: `Déplacement (${fmt(kmBeyond)} km facturés)`, val: `+${fmt(deplacement)} €` });
   }
 
-  const inputStyle = {
-    flex: 1, background: 'var(--bg)', border: '1px solid var(--border)',
-    padding: '9px 12px', fontSize: '15px', color: 'var(--text)',
-    outline: 'none', fontFamily: 'inherit', minWidth: 0,
-  };
   const blockStyle = {
     background: 'var(--bg3)', border: '1px solid var(--border)',
     padding: '14px 18px', marginBottom: '10px',
@@ -197,21 +183,8 @@ function PanelInsp() {
             </div>
           </div>
 
-          <div style={{ ...blockStyle, marginBottom: 0 }}>
-            <div style={subLblStyle}>
-              Distance aller simple <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>20 km A/R offerts · +0,50 €/km au-delà</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input type="number" min="0" placeholder="ex. 25"
-                value={distance} onChange={e => setDistance(e.target.value)}
-                style={inputStyle} />
-              <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>km</span>
-              {distanceVal > 0 && kmBeyond === 0 && (
-                <span style={{ color: 'var(--steel)', fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>Offert</span>
-              )}
-              {deplacement > 0 && <span className="o-price">+{fmt(deplacement)} €</span>}
-            </div>
-            {distanceVal > 0 && <div style={{ fontSize: '11.5px', color: 'var(--muted)', marginTop: '6px' }}>A/R = {fmt(totalKm)} km · {kmBeyond > 0 ? `${fmt(kmBeyond)} km facturés` : '20 km offerts'}</div>}
+          <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '10px', lineHeight: 1.6 }}>
+            Déplacement : 20 km A/R offerts · +0,50 €/km au-delà · péages refacturés
           </div>
         </div>
 
