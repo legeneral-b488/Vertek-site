@@ -67,6 +67,18 @@ function About() {
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '10px', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--green)', display: 'block', marginBottom: '8px' }}>Zone d'intervention</span>
             Isère (38) et départements limitrophes · Déplacements plus larges sur devis
           </div>
+
+          <div style={{
+            marginTop: '12px', padding: '18px 22px', background: 'var(--bg3)',
+            border: '1px solid var(--border)', fontSize: '13px', color: 'var(--muted)',
+          }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: '10px', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--steel)', display: 'block', marginBottom: '8px' }}>Structure sœur</span>
+            <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer"
+              style={{ color: 'var(--steel)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, letterSpacing: '.06em', fontSize: '14px' }}>
+              BEVERT
+            </a>
+            {' '}— Bureau d'études environnementales · diagnostics écologiques, études d'impact.
+          </div>
         </div>
 
         <div>
@@ -438,6 +450,7 @@ function Footer() {
         <a href="#portfolio">Réalisations</a>
         <a href="#contact">Contact</a>
         <a href="mentions-legales.html">Mentions légales</a>
+        <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--steel)' }}>BEVERT — Études environnementales</a>
       </div>
 
       <div className="footer-legal">
