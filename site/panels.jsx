@@ -80,30 +80,58 @@ function PanelImmo() {
 
 /* ── INSPECTION & DIAGNOSTIQUE ── */
 function PanelInsp() {
-  const [forfait, setForfait] = React.useState(1);
-  const [opts, setOpts] = React.useState({ pano: false, visite: false, mesures: false, express: false });
+  const RATE_SURFACE = 0.15;
+  const RATE_KM     = 0.50;
+  const KM_FRANCHISE = 20;
+
+  const [forfaitIdx, setForfaitIdx] = React.useState(0);
+  const [nbVideos,   setNbVideos]   = React.useState(0);
+  const [surface,    setSurface]    = React.useState('');
+  const [distance,   setDistance]   = React.useState('');
 
   const forfaits = [
-    { name: 'Repérage',          price: 150, desc: 'Survol complet, photos HD, rapport de reconnaissance.' },
-    { name: 'Diagnostic',        price: 250, desc: 'Rapport structuré avec annotations, livrables haute résolution.', rec: true },
-    { name: 'Suivi de Chantier', price: 450, desc: 'Visites récurrentes avec comparatifs visuels datés.' },
+    { name: 'Repérage',          price: 120,  desc: 'Survol + photos HD + rapport de reconnaissance. Photos uniquement.', hasVideo: true },
+    { name: 'Diagnostic',        price: 290,  desc: 'Photos HD + vidéo incluse + rapport structuré annoté.', rec: true },
+    { name: 'Suivi de chantier', price: null, desc: 'Accompagnement récurrent — prix défini au cas par cas.' },
   ];
 
-  const options = [
-    { key: 'pano',    label: 'Panorama 360°',        price: 70  },
-    { key: 'visite',  label: 'Visite virtuelle',      price: 120 },
-    { key: 'mesures', label: 'Relevé de mesures',     price: 50  },
-    { key: 'express', label: 'Intervention express',  price: 100 },
-  ];
+  const f        = forfaits[forfaitIdx];
+  const isDevis  = f.price === null;
+  const surfaceVal  = parseFloat(surface)  || 0;
+  const distanceVal = parseFloat(distance) || 0;
+  const totalKm     = distanceVal * 2;
+  const kmBeyond    = Math.max(0, totalKm - KM_FRANCHISE);
 
-  const total = forfaits[forfait].price + options.filter(o => opts[o.key]).reduce((s, o) => s + o.price, 0);
+  const videoPrice   = (f.hasVideo && !isDevis) ? nbVideos * 50 : 0;
+  const surfacePrice = !isDevis ? Math.round(surfaceVal * RATE_SURFACE * 100) / 100 : 0;
+  const deplacement  = !isDevis ? Math.round(kmBeyond  * RATE_KM      * 100) / 100 : 0;
+  const total        = !isDevis ? (f.price + videoPrice + surfacePrice + deplacement) : 0;
 
-  const toggle = k => setOpts(prev => ({ ...prev, [k]: !prev[k] }));
+  const fmt = n => Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ',');
 
-  const lines = [
-    { lbl: forfaits[forfait].name, val: `${forfaits[forfait].price} €` },
-    ...options.filter(o => opts[o.key]).map(o => ({ lbl: o.label, val: `+${o.price} €` })),
-  ];
+  const lines = [];
+  if (!isDevis) {
+    lines.push({ lbl: f.name, val: `${f.price} €` });
+    if (videoPrice > 0) lines.push({ lbl: `Vidéo ×${nbVideos}`, val: `+${videoPrice} €` });
+    if (surfacePrice > 0) lines.push({ lbl: `Surface (${fmt(surfaceVal)} m²)`, val: `+${fmt(surfacePrice)} €` });
+    if (distanceVal > 0 && kmBeyond === 0) lines.push({ lbl: 'Déplacement', val: 'Offert' });
+    if (deplacement > 0) lines.push({ lbl: `Déplacement (${fmt(kmBeyond)} km facturés)`, val: `+${fmt(deplacement)} €` });
+  }
+
+  const inputStyle = {
+    flex: 1, background: 'var(--bg)', border: '1px solid var(--border)',
+    padding: '9px 12px', fontSize: '15px', color: 'var(--text)',
+    outline: 'none', fontFamily: 'inherit', minWidth: 0,
+  };
+  const blockStyle = {
+    background: 'var(--bg3)', border: '1px solid var(--border)',
+    padding: '14px 18px', marginBottom: '10px',
+  };
+  const subLblStyle = {
+    fontFamily: 'var(--font-display)', letterSpacing: '.05em',
+    textTransform: 'uppercase', fontSize: '11px',
+    color: 'var(--muted)', marginBottom: '8px',
+  };
 
   return (
     <div className="insp svc-panel sec" id="panel-insp">
@@ -118,48 +146,82 @@ function PanelInsp() {
 
       <div className="insp-grid">
         <div>
-          <div className="insp-block-lbl">Choisissez votre forfait</div>
+          <div className="insp-block-lbl">1 · Prestation de base</div>
           <div className="insp-forfaits">
-            {forfaits.map((f, i) => (
-              <div key={i} className={`insp-f${forfait === i ? ' sel' : ''}`} onClick={() => setForfait(i)}>
-                {f.rec && <div className="insp-reco">Recommandé</div>}
+            {forfaits.map((fi, i) => (
+              <div key={i} className={`insp-f${forfaitIdx === i ? ' sel' : ''}`}
+                onClick={() => { setForfaitIdx(i); if (!fi.hasVideo) setNbVideos(0); }}>
+                {fi.rec && <div className="insp-reco">Recommandé</div>}
                 <div className="insp-dot"><i /></div>
                 <div style={{ flex: 1 }}>
                   <div className="insp-fhead">
-                    <span className="insp-fname">{f.name}</span>
-                    <span className="insp-fprice">{f.price} €</span>
+                    <span className="insp-fname">{fi.name}</span>
+                    <span className="insp-fprice">{fi.price !== null ? `${fi.price} €` : 'Sur devis'}</span>
                   </div>
-                  <div className="insp-fdesc">{f.desc}</div>
-                  <span className="insp-fkeep">Fichiers inclus</span>
+                  <div className="insp-fdesc">{fi.desc}</div>
+                  {fi.price && <span className="insp-fkeep">Fichiers inclus</span>}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="insp-block-lbl" style={{ marginTop: '34px' }}>Options à la carte</div>
-          <div className="insp-opts">
-            {options.map(o => (
-              <label key={o.key} className="insp-opt" onClick={() => toggle(o.key)}>
-                <input type="checkbox" readOnly checked={!!opts[o.key]} />
-                {o.label}
-                <span className="o-price">+{o.price} €</span>
-              </label>
-            ))}
-            <div className="insp-opt devis" style={{ cursor: 'default' }}>
-              Thermographie IR / LIDAR
-              <span className="o-price">Sur devis</span>
+          <div className="insp-block-lbl" style={{ marginTop: '34px' }}>2 · Calcul du devis</div>
+
+          {f.hasVideo && (
+            <div style={{ ...blockStyle }}>
+              <div style={subLblStyle}>
+                Vidéo <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>+50 € par vidéo</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <button onClick={() => setNbVideos(Math.max(0, nbVideos - 1))}
+                  style={{ width: '30px', height: '30px', background: 'var(--bg)', border: '1px solid rgba(74,122,150,.5)', cursor: 'pointer', fontSize: '18px', lineHeight: 1, color: 'var(--steel)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, color: 'var(--steel)', minWidth: '22px', textAlign: 'center' }}>{nbVideos}</span>
+                <button onClick={() => setNbVideos(nbVideos + 1)}
+                  style={{ width: '30px', height: '30px', background: 'var(--bg)', border: '1px solid rgba(74,122,150,.5)', cursor: 'pointer', fontSize: '18px', lineHeight: 1, color: 'var(--steel)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                <span style={{ color: 'var(--muted)', fontSize: '13px', flex: 1 }}>vidéo(s)</span>
+                {videoPrice > 0 && <span className="o-price">+{videoPrice} €</span>}
+              </div>
             </div>
-            <div className="insp-opt devis" style={{ cursor: 'default' }}>
-              Cartographie orthophotographique
-              <span className="o-price">Sur devis</span>
+          )}
+
+          <div style={{ ...blockStyle }}>
+            <div style={subLblStyle}>
+              Surface totale <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>+0,15 €/m²</span>
             </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <input type="number" min="0" placeholder="ex. 1600"
+                value={surface} onChange={e => setSurface(e.target.value)}
+                style={inputStyle} />
+              <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>m²</span>
+              {surfacePrice > 0 && <span className="o-price">+{fmt(surfacePrice)} €</span>}
+            </div>
+          </div>
+
+          <div style={{ ...blockStyle, marginBottom: 0 }}>
+            <div style={subLblStyle}>
+              Distance aller simple <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>20 km A/R offerts · +0,50 €/km au-delà</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <input type="number" min="0" placeholder="ex. 25"
+                value={distance} onChange={e => setDistance(e.target.value)}
+                style={inputStyle} />
+              <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>km</span>
+              {distanceVal > 0 && kmBeyond === 0 && (
+                <span style={{ color: 'var(--steel)', fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>Offert</span>
+              )}
+              {deplacement > 0 && <span className="o-price">+{fmt(deplacement)} €</span>}
+            </div>
+            {distanceVal > 0 && <div style={{ fontSize: '11.5px', color: 'var(--muted)', marginTop: '6px' }}>A/R = {fmt(totalKm)} km · {kmBeyond > 0 ? `${fmt(kmBeyond)} km facturés` : '20 km offerts'}</div>}
           </div>
         </div>
 
         <div>
           <div className="insp-sum">
-            <div className="insp-sum-lbl">Estimation</div>
-            <div className="insp-total">{total} <small>€ HT</small></div>
+            <div className="insp-sum-lbl">Estimation indicative</div>
+            {isDevis
+              ? <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', fontWeight: 800, color: '#8ec3e0', lineHeight: 1, letterSpacing: '-.01em', paddingBottom: '6px' }}>Sur devis</div>
+              : <div className="insp-total">{fmt(total)} <small>€ HT</small></div>
+            }
             <div className="insp-sum-lines">
               {lines.map((l, i) => (
                 <div key={i} className="insp-line">
@@ -168,10 +230,14 @@ function PanelInsp() {
                 </div>
               ))}
             </div>
-            <a href={`#contact`} className="btn btn-steel" style={{ width: '100%', justifyContent: 'center', marginTop: '18px' }}>
+            <a href="#contact" className="btn btn-steel" style={{ width: '100%', justifyContent: 'center', marginTop: '18px' }}>
               Demander ce devis <Arr />
             </a>
-            <div className="insp-sum-note">{TVA} · Déplacement inclus Isère &amp; limitrophes</div>
+            <div className="insp-sum-note">
+              À titre indicatif — un devis est nécessaire.<br />
+              Péages éventuels refacturés au client.<br />
+              {TVA}
+            </div>
           </div>
         </div>
       </div>
@@ -181,7 +247,7 @@ function PanelInsp() {
         <div className="insp-bas-grid">
           <div className="insp-bas-card">
             <h5>Déplacement</h5>
-            <p>Inclus dans un rayon de 50 km autour de Villefontaine (38). Au-delà : forfait kilométrique sur devis.</p>
+            <p>20 km A/R offerts (franchise). Au-delà : 0,50 €/km. Péages éventuels refacturés au client.</p>
           </div>
           <div className="insp-bas-card">
             <h5>Conditions météo</h5>
