@@ -229,6 +229,10 @@ function PanelInsp() {
         <div className="insp-block-lbl">Bon à savoir</div>
         <div className="insp-bas-grid">
           <div className="insp-bas-card">
+            <h5>Déplacement</h5>
+            <p>Frais kilométriques de 0,15 €/km à prévoir au-delà de 20 km parcourus.</p>
+          </div>
+          <div className="insp-bas-card">
             <h5>Conditions météo</h5>
             <p>Vol annulé si vent &gt; 10 m/s, pluie ou visibilité insuffisante. Reprogrammation sans frais sous 48h.</p>
           </div>
