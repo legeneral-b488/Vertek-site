@@ -118,6 +118,11 @@ function PanelInsp() {
 
   const mailHref = `mailto:vertek.contact@gmail.com?subject=${encodeURIComponent('Demande de devis - Inspection & Diagnostic')}&body=${encodeURIComponent(mailBody)}`;
 
+  const inputStyle = {
+    flex: 1, background: 'var(--bg)', border: '1px solid var(--border)',
+    padding: '9px 12px', fontSize: '15px', color: 'var(--text)',
+    outline: 'none', fontFamily: 'inherit', minWidth: 0,
+  };
   const blockStyle = {
     background: 'var(--bg3)', border: '1px solid var(--border)',
     padding: '14px 18px', marginBottom: '10px',
