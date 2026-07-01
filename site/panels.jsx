@@ -87,7 +87,7 @@ function PanelInsp() {
   const [surface,    setSurface]    = React.useState('');
 
   const forfaits = [
-    { name: 'Repérage',          price: 120,  desc: 'Survol + photos HD + rapport de reconnaissance. Photos uniquement.', hasVideo: true },
+    { name: 'Repérage',          price: 120,  desc: 'Photos HD + rapport de reconnaissance. Photos uniquement.', hasVideo: true },
     { name: 'Diagnostic',        price: 290,  desc: 'Photos HD + vidéo incluse + rapport structuré annoté.', rec: true },
     { name: 'Suivi de chantier', price: null, desc: 'Accompagnement récurrent — prix défini au cas par cas.' },
   ];
@@ -108,6 +108,15 @@ function PanelInsp() {
     if (videoPrice > 0) lines.push({ lbl: `Vidéo ×${nbVideos}`, val: `+${videoPrice} €` });
     if (surfacePrice > 0) lines.push({ lbl: `Surface (${fmt(surfaceVal)} m²)`, val: `+${fmt(surfacePrice)} €` });
   }
+
+  const mailBody = [
+    `Prestation : ${f.name}${isDevis ? ' (sur devis)' : ` (${f.price} €)`}`,
+    videoPrice > 0 ? `Vidéo : ${nbVideos} × 50 € = ${videoPrice} €` : null,
+    surfacePrice > 0 ? `Surface totale : ${fmt(surfaceVal)} m² (+${fmt(surfacePrice)} €)` : null,
+    isDevis ? 'Estimation : sur devis' : `Estimation totale : ${fmt(total)} € HT`,
+  ].filter(Boolean).join('\n');
+
+  const mailHref = `mailto:vertek.contact@gmail.com?subject=${encodeURIComponent('Demande de devis - Inspection & Diagnostic')}&body=${encodeURIComponent(mailBody)}`;
 
   const blockStyle = {
     background: 'var(--bg3)', border: '1px solid var(--border)',
@@ -182,10 +191,6 @@ function PanelInsp() {
               {surfacePrice > 0 && <span className="o-price">+{fmt(surfacePrice)} €</span>}
             </div>
           </div>
-
-          <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '10px', lineHeight: 1.6 }}>
-            Déplacement : 20 km A/R offerts · +0,50 €/km au-delà · péages refacturés
-          </div>
         </div>
 
         <div>
@@ -203,7 +208,7 @@ function PanelInsp() {
                 </div>
               ))}
             </div>
-            <a href="#contact" className="btn btn-steel" style={{ width: '100%', justifyContent: 'center', marginTop: '18px' }}>
+            <a href={mailHref} className="btn btn-steel" style={{ width: '100%', justifyContent: 'center', marginTop: '18px' }}>
               Demander ce devis <Arr />
             </a>
             <div className="insp-sum-note">
@@ -218,10 +223,6 @@ function PanelInsp() {
       <div className="insp-bas">
         <div className="insp-block-lbl">Bon à savoir</div>
         <div className="insp-bas-grid">
-          <div className="insp-bas-card">
-            <h5>Déplacement</h5>
-            <p>20 km A/R offerts (franchise). Au-delà : 0,50 €/km. Péages éventuels refacturés au client.</p>
-          </div>
           <div className="insp-bas-card">
             <h5>Conditions météo</h5>
             <p>Vol annulé si vent &gt; 10 m/s, pluie ou visibilité insuffisante. Reprogrammation sans frais sous 48h.</p>
