@@ -260,9 +260,9 @@ function PanelSin({ urgencePulse }) {
   ];
 
   const expertises = [
-    { label: 'Standard', delai: '72h',           price: '120 €' },
-    { label: 'Urgent',   delai: '24h',           price: '250 €' },
-    { label: 'Immédiat', delai: 'Même journée',  price: '350 €' },
+    { label: 'Standard', delai: '72h',           price: '200 €' },
+    { label: 'Urgent',   delai: '24h',           price: '350 €' },
+    { label: 'Immédiat', delai: 'Même journée',  price: 'Sur devis', note: 'Appelez-moi rapidement' },
   ];
 
   return (
@@ -314,7 +314,10 @@ function PanelSin({ urgencePulse }) {
           <div className="sin-table">
             {expertises.map((e, i) => (
               <div key={i} className="sin-row">
-                <span>{e.label} — {e.delai}</span>
+                <span>
+                  {e.label} — {e.delai}
+                  {e.note && <><br /><small style={{ fontSize: '11px', opacity: .75 }}>{e.note}</small></>}
+                </span>
                 <b>{e.price}</b>
               </div>
             ))}
