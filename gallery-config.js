@@ -23,22 +23,28 @@ window.GALLERY = [
 
   /* ── VIDÉOS (GitHub LFS) ── */
   {
-    file: 'Vente voiture.mp4',
-    type: 'video',
-    tag:  'Véhicules',
-    src:  LFS + 'Vente%20voiture.mp4',
-  },
-  {
     file: 'Vente maison.MP4',
     type: 'video',
     tag:  'Immobilier',
     src:  LFS + 'Vente%20maison.MP4',
   },
   {
+    file: 'Vente voiture.mp4',
+    type: 'video',
+    tag:  'Véhicules',
+    src:  LFS + 'Vente%20voiture.mp4',
+  },
+  {
     file: 'Inspection antenne.mp4',
     type: 'video',
     tag:  'Inspection',
     src:  LFS + 'Inspection%20antenne.mp4',
+  },
+  {
+    file: 'Vidéo pont ouvrage d\'art.mp4',
+    type: 'video',
+    tag:  'Inspection',
+    src:  LFS + 'Vid%C3%A9o%20pont%20ouvrage%20d\'art.mp4',
   },
 
   /* ── PHOTOS (dossier uploads/) ── */
@@ -48,34 +54,34 @@ window.GALLERY = [
     tag:  'Inspection',
   },
   {
-    file: 'Annonce voiture .JPG',
+    file: 'inspection bachage.JPG',
     type: 'photo',
-    tag:  'Véhicules',
+    tag:  'Inspection',
   },
   {
     file: 'Diagnostique Inondation.JPG',
     type: 'photo',
-    tag:  'Sinistre',
-  },
-  {
-    file: 'Annonce moto.JPG',
-    type: 'photo',
-    tag:  'Véhicules',
-  },
-  {
-    file: "Inspection ouvrage d'art.jpg",
-    type: 'photo',
-    tag:  'Inspection',
-  },
-  {
-    file: 'Diagnostique impact environnementale.JPG',
-    type: 'photo',
     tag:  'Diagnostic',
   },
   {
-    file: 'inspection bachage.JPG',
+    file: 'Bachage (Suivi de chantier).JPG',
     type: 'photo',
-    tag:  'Inspection',
+    tag:  'Chantier',
+  },
+  {
+    file: "Inspection d'après travaux (SNCF).JPG",
+    type: 'photo',
+    tag:  'Ferroviaire',
+  },
+  {
+    file: 'Pilier de Pont (SNCF).JPG',
+    type: 'photo',
+    tag:  'Ferroviaire',
+  },
+  {
+    file: 'Poteau caténaire (SNCF).JPG',
+    type: 'photo',
+    tag:  'Ferroviaire',
   },
 
   /* ── Pour ajouter une vidéo LFS :

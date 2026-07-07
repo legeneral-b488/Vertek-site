@@ -1,8 +1,7 @@
 /* app.jsx — Assemblage + Tweaks + Rendu */
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "scannerVisible": true,
-  "urgencePulse": true
+  "scannerVisible": true
 }/*EDITMODE-END*/;
 
 /* ── TWEAKS PANEL ── */
@@ -38,7 +37,6 @@ function TweaksPanel({ tweaks, setTweaks, visible, onClose }) {
       </div>
       <div style={{ padding: '17px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <Row label="Drone scanner" k="scannerVisible" />
-        <Row label="Pulsation urgence" k="urgencePulse" />
       </div>
     </div>
   );
@@ -50,8 +48,7 @@ function App() {
   const [tweaksVisible, setTweaksVisible] = React.useState(false);
 
   React.useEffect(() => {
-    document.body.classList.toggle('no-scan',  !tweaks.scannerVisible);
-    document.body.classList.toggle('no-pulse', !tweaks.urgencePulse);
+    document.body.classList.toggle('no-scan', !tweaks.scannerVisible);
   }, [tweaks]);
 
   React.useEffect(() => {
@@ -68,7 +65,7 @@ function App() {
     <>
       <Nav />
       <Hero scannerActive={tweaks.scannerVisible} />
-      <Services urgencePulse={tweaks.urgencePulse} />
+      <Services />
       <About />
       <Why />
       <Portfolio />

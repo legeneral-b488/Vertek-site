@@ -1,4 +1,4 @@
-/* panels.jsx — Onglets services : Immobilier · Inspection · Sinistre */
+/* panels.jsx — Onglets services : Immobilier · Inspection & Diagnostic */
 
 const TVA = 'HT — TVA non applicable, art. 293 B du CGI';
 
@@ -7,20 +7,20 @@ function PanelImmo() {
   const packs = [
     {
       name: 'Essentiel',
-      price: '80 €',
+      price: '50 €',
       items: ['5 photos aériennes retouchées', 'Livraison sous 48h', 'Fichiers haute résolution'],
     },
     {
       name: 'Type',
-      price: '150 €',
+      price: '80 €',
       feat: true,
       tag: 'Le plus demandé',
-      items: ['10 photos aériennes retouchées', '1 vidéo aérienne montée (~60 s)', 'Musique libre de droits', 'Livraison sous 48h'],
+      items: ['10 photos aériennes retouchées (à peu près)', '1 vidéo aérienne montée (~60 s)', 'Livraison sous 48h'],
     },
     {
       name: 'Signature',
-      price: '380 €',
-      items: ['15 photos aériennes retouchées', 'Plusieurs vidéos montées', 'Visite guidée aérienne', 'Livraison express 24h'],
+      price: '150 €',
+      items: ['15 photos aériennes retouchées (à peu près)', 'Plusieurs vidéos montées', 'Visite guidée aérienne', 'Livraison express 24h'],
     },
   ];
 
@@ -82,12 +82,14 @@ function PanelImmo() {
 function PanelInsp() {
   const RATE_SURFACE = 0.15;
 
-  const [forfaitIdx, setForfaitIdx] = React.useState(0);
-  const [nbVideos,   setNbVideos]   = React.useState(0);
-  const [surface,    setSurface]    = React.useState('');
+  const [forfaitIdx,    setForfaitIdx]    = React.useState(0);
+  const [videoSelected, setVideoSelected] = React.useState(false);
+  const [metric,        setMetric]        = React.useState('surface'); // 'surface' | 'ouvrages'
+  const [surface,       setSurface]       = React.useState('');
+  const [nbOuvrages,    setNbOuvrages]    = React.useState('');
 
   const forfaits = [
-    { name: 'Repérage',          price: 120,  desc: 'Photos HD + rapport de reconnaissance. Photos uniquement.', hasVideo: true },
+    { name: 'Repérage',          price: 120,  desc: 'Photos HD + rapport de reconnaissance, au choix en photos brutes ou en fichier standardisé simple.', hasVideo: true },
     { name: 'Diagnostic',        price: 290,  desc: 'Photos HD + vidéo incluse + rapport structuré annoté.', rec: true },
     { name: 'Suivi de chantier', price: null, desc: 'Accompagnement récurrent — prix défini au cas par cas.' },
   ];
@@ -95,9 +97,11 @@ function PanelInsp() {
   const f        = forfaits[forfaitIdx];
   const isDevis  = f.price === null;
   const surfaceVal  = parseFloat(surface) || 0;
+  const ouvragesVal = parseInt(nbOuvrages) || 0;
 
-  const videoPrice   = (f.hasVideo && !isDevis) ? nbVideos * 50 : 0;
-  const surfacePrice = !isDevis ? Math.round(surfaceVal * RATE_SURFACE * 100) / 100 : 0;
+  const videoPrice   = (f.hasVideo && !isDevis && videoSelected) ? 50 : 0;
+  const surfacePrice = (!isDevis && metric === 'surface') ? Math.round(surfaceVal * RATE_SURFACE * 100) / 100 : 0;
+  const ouvragesQuote = !isDevis && metric === 'ouvrages' && ouvragesVal > 0;
   const total        = !isDevis ? (f.price + videoPrice + surfacePrice) : 0;
 
   const fmt = n => Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ',');
@@ -105,15 +109,17 @@ function PanelInsp() {
   const lines = [];
   if (!isDevis) {
     lines.push({ lbl: f.name, val: `${f.price} €` });
-    if (videoPrice > 0) lines.push({ lbl: `Vidéo ×${nbVideos}`, val: `+${videoPrice} €` });
+    if (videoPrice > 0) lines.push({ lbl: 'Vidéo (option)', val: `+${videoPrice} €` });
     if (surfacePrice > 0) lines.push({ lbl: `Surface (${fmt(surfaceVal)} m²)`, val: `+${fmt(surfacePrice)} €` });
+    if (ouvragesQuote) lines.push({ lbl: `Nombre d'ouvrages (${ouvragesVal})`, val: 'Sur devis' });
   }
 
   const mailBody = [
     `Prestation : ${f.name}${isDevis ? ' (sur devis)' : ` (${f.price} €)`}`,
-    videoPrice > 0 ? `Vidéo : ${nbVideos} × 50 € = ${videoPrice} €` : null,
+    videoPrice > 0 ? 'Vidéo (option) : +50 €' : null,
     surfacePrice > 0 ? `Surface totale : ${fmt(surfaceVal)} m² (+${fmt(surfacePrice)} €)` : null,
-    isDevis ? 'Estimation : sur devis' : `Estimation totale : ${fmt(total)} € HT`,
+    ouvragesQuote ? `Nombre d'ouvrages : ${ouvragesVal} (tarif sur devis)` : null,
+    isDevis ? 'Estimation : sur devis' : `Estimation totale : ${fmt(total)} € HT${ouvragesQuote ? ' + tarif ouvrages sur devis' : ''}`,
   ].filter(Boolean).join('\n');
 
   const mailHref = `mailto:vertek.contact@gmail.com?subject=${encodeURIComponent('Demande de devis - Inspection & Diagnostic')}&body=${encodeURIComponent(mailBody)}`;
@@ -132,6 +138,12 @@ function PanelInsp() {
     textTransform: 'uppercase', fontSize: '11px',
     color: 'var(--muted)', marginBottom: '8px',
   };
+  const metricBtnStyle = active => ({
+    flex: 1, padding: '10px 12px', fontSize: '12px', fontFamily: 'var(--font-display)',
+    letterSpacing: '.04em', textTransform: 'uppercase', cursor: 'pointer',
+    background: active ? 'var(--steel)' : 'var(--bg)', color: active ? '#fff' : 'var(--muted)',
+    border: `1px solid ${active ? 'var(--steel)' : 'var(--border)'}`, transition: 'all .15s',
+  });
 
   return (
     <div className="insp svc-panel sec" id="panel-insp">
@@ -148,54 +160,74 @@ function PanelInsp() {
         <div>
           <div className="insp-block-lbl">1 · Prestation de base</div>
           <div className="insp-forfaits">
-            {forfaits.map((fi, i) => (
-              <div key={i} className={`insp-f${forfaitIdx === i ? ' sel' : ''}`}
-                onClick={() => { setForfaitIdx(i); if (!fi.hasVideo) setNbVideos(0); }}>
-                {fi.rec && <div className="insp-reco">Recommandé</div>}
-                <div className="insp-dot"><i /></div>
-                <div style={{ flex: 1 }}>
-                  <div className="insp-fhead">
-                    <span className="insp-fname">{fi.name}</span>
-                    <span className="insp-fprice">{fi.price !== null ? `${fi.price} €` : 'Sur devis'}</span>
+            {forfaits.map((fi, i) => {
+              const selected = forfaitIdx === i;
+              return (
+                <div key={i} className={`insp-f${selected ? ' sel' : ''}`}
+                  onClick={() => { setForfaitIdx(i); if (!fi.hasVideo) setVideoSelected(false); }}>
+                  {fi.rec && <div className="insp-reco">Recommandé</div>}
+                  <div className="insp-dot"><i /></div>
+                  <div style={{ flex: 1 }}>
+                    <div className="insp-fhead">
+                      <span className="insp-fname">{fi.name}</span>
+                      <span className="insp-fprice">{fi.price !== null ? `${fi.price} €` : 'Sur devis'}</span>
+                    </div>
+                    <div className="insp-fdesc">{fi.desc}</div>
+                    {fi.hasVideo && (
+                      <span
+                        onClick={selected ? (e) => { e.stopPropagation(); setVideoSelected(v => !v); } : undefined}
+                        style={{
+                          display: 'inline-block', marginTop: '9px', fontSize: '11.5px',
+                          fontFamily: 'var(--font-display)', letterSpacing: '.03em',
+                          color: selected ? (videoSelected ? '#fff' : 'var(--steel)') : 'var(--muted)',
+                          background: selected && videoSelected ? 'var(--steel)' : 'transparent',
+                          border: `1px solid ${selected ? 'rgba(74,122,150,.5)' : 'var(--border)'}`,
+                          padding: '3px 9px', cursor: selected ? 'pointer' : 'default',
+                          transition: 'all .15s',
+                        }}>
+                        {selected && videoSelected ? '✓ ' : ''}Option vidéo +50 €
+                      </span>
+                    )}
                   </div>
-                  <div className="insp-fdesc">{fi.desc}</div>
-                  {fi.price && <span className="insp-fkeep">Fichiers inclus</span>}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="insp-block-lbl" style={{ marginTop: '34px' }}>2 · Calcul du devis</div>
 
-          {f.hasVideo && (
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+            <button type="button" onClick={() => setMetric('surface')} style={metricBtnStyle(metric === 'surface')}>Surface totale</button>
+            <button type="button" onClick={() => setMetric('ouvrages')} style={metricBtnStyle(metric === 'ouvrages')}>Nombre d'ouvrages</button>
+          </div>
+
+          {metric === 'surface' ? (
             <div style={{ ...blockStyle }}>
               <div style={subLblStyle}>
-                Vidéo <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>+50 € par vidéo</span>
+                Surface totale <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>+0,15 €/m²</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <button onClick={() => setNbVideos(Math.max(0, nbVideos - 1))}
-                  style={{ width: '30px', height: '30px', background: 'var(--bg)', border: '1px solid rgba(74,122,150,.5)', cursor: 'pointer', fontSize: '18px', lineHeight: 1, color: 'var(--steel)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, color: 'var(--steel)', minWidth: '22px', textAlign: 'center' }}>{nbVideos}</span>
-                <button onClick={() => setNbVideos(nbVideos + 1)}
-                  style={{ width: '30px', height: '30px', background: 'var(--bg)', border: '1px solid rgba(74,122,150,.5)', cursor: 'pointer', fontSize: '18px', lineHeight: 1, color: 'var(--steel)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-                <span style={{ color: 'var(--muted)', fontSize: '13px', flex: 1 }}>vidéo(s)</span>
-                {videoPrice > 0 && <span className="o-price">+{videoPrice} €</span>}
+                <input type="number" min="0" placeholder="ex. 1600"
+                  value={surface} onChange={e => setSurface(e.target.value)}
+                  style={inputStyle} />
+                <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>m²</span>
+                {surfacePrice > 0 && <span className="o-price">+{fmt(surfacePrice)} €</span>}
+              </div>
+            </div>
+          ) : (
+            <div style={{ ...blockStyle }}>
+              <div style={subLblStyle}>
+                Nombre d'ouvrages <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>Tarif sur devis</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input type="number" min="0" placeholder="ex. 3"
+                  value={nbOuvrages} onChange={e => setNbOuvrages(e.target.value)}
+                  style={inputStyle} />
+                <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>ouvrage(s)</span>
+                {ouvragesQuote && <span className="o-price" style={{ color: 'var(--muted)' }}>Sur devis</span>}
               </div>
             </div>
           )}
-
-          <div style={{ ...blockStyle }}>
-            <div style={subLblStyle}>
-              Surface totale <span style={{ color: 'rgba(74,122,150,.8)', fontWeight: 600 }}>+0,15 €/m²</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input type="number" min="0" placeholder="ex. 1600"
-                value={surface} onChange={e => setSurface(e.target.value)}
-                style={inputStyle} />
-              <span style={{ color: 'var(--muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>m²</span>
-              {surfacePrice > 0 && <span className="o-price">+{fmt(surfacePrice)} €</span>}
-            </div>
-          </div>
         </div>
 
         <div>
@@ -218,7 +250,6 @@ function PanelInsp() {
             </a>
             <div className="insp-sum-note">
               À titre indicatif — un devis est nécessaire.<br />
-              Péages éventuels refacturés au client.<br />
               {TVA}
             </div>
           </div>
@@ -251,108 +282,13 @@ function PanelInsp() {
   );
 }
 
-/* ── SINISTRE ── */
-function PanelSin({ urgencePulse }) {
-  const preEtat = [
-    { taille: 'Bâtiment individuel (< 200 m²)', price: '120 €' },
-    { taille: 'Bâtiment collectif / commercial',  price: '150 €' },
-    { taille: 'Grande surface / site industriel', price: '180 €' },
-  ];
-
-  const expertises = [
-    { label: 'Standard', delai: '72h',           price: '200 €' },
-    { label: 'Urgent',   delai: '24h',           price: '350 €' },
-    { label: 'Immédiat', delai: 'Même journée',  price: 'Sur devis', note: 'Appelez-moi rapidement' },
-  ];
-
-  return (
-    <div className="sin svc-panel sec" id="panel-sin">
-      <div style={{ maxWidth: '1160px', margin: '0 auto' }}>
-        <div className="sec-lbl">Expertise Sinistre</div>
-        <h2 className="sec-title">Intervention rapide<br />sur site</h2>
-        <p className="sec-sub">
-          Grêle, inondation, incendie, impact — nous documentons les dommages depuis les airs
-          pour accélérer votre dossier d'assurance.
-        </p>
-      </div>
-
-      <div className="sin-grid">
-        {/* Pré-état des lieux */}
-        <div className="sin-card">
-          <div className="sin-num">01 · Audit préventif</div>
-          <h3 className="sin-h">Pré-état des lieux &amp; Audit de risque</h3>
-          <p className="sin-body">
-            Bilan visuel aérien avant un sinistre ou en prévention. Idéal pour les assureurs, syndics
-            et gestionnaires de patrimoine souhaitant documenter l'état initial d'un bâtiment.
-          </p>
-          <div className="sin-table">
-            {preEtat.map((r, i) => (
-              <div key={i} className="sin-row">
-                <span>{r.taille}</span>
-                <b>{r.price}</b>
-              </div>
-            ))}
-          </div>
-          <p className="sin-note">{TVA} · Rapport photos HD inclus</p>
-          <div style={{ marginTop: '24px' }}>
-            <a href="#contact" className="btn btn-steel">Demander un devis <Arr /></a>
-          </div>
-        </div>
-
-        {/* Expertise urgente */}
-        <div className={`sin-card sin-urgent`} style={{ animation: urgencePulse ? undefined : 'none' }}>
-          <div className="sin-badge">
-            <span className="dot" />
-            Intervention urgente
-          </div>
-          <div className="sin-num" style={{ marginTop: '8px' }}>02 · Post-sinistre</div>
-          <h3 className="sin-h">Expertise Sinistre</h3>
-          <p className="sin-body">
-            Documentation photographique et vidéo des dommages après sinistre.
-            Rapport structuré transmissible directement à votre assurance.
-          </p>
-          <div className="sin-table">
-            {expertises.map((e, i) => (
-              <div key={i} className="sin-row">
-                <span>
-                  {e.label} — {e.delai}
-                  {e.note && <><br /><small style={{ fontSize: '11px', opacity: .75 }}>{e.note}</small></>}
-                </span>
-                <b>{e.price}</b>
-              </div>
-            ))}
-          </div>
-          <p className="sin-note">{TVA} · Disponible 7j/7</p>
-        </div>
-      </div>
-
-      {/* Appel direct */}
-      <div className="sin-call">
-        <div>
-          <div className="sin-call-h">Urgence ? Appelez directement</div>
-          <div className="sin-call-sub">Disponible 7j/7 — réponse immédiate pour les interventions post-sinistre.</div>
-        </div>
-        <a href="tel:+33695742516" className="sin-tel">
-          <svg width="32" height="32" viewBox="0 0 20 20" fill="none">
-            <path d="M4 2h4l2 5-2.5 1.5a11 11 0 005 5L14 11l5 2v4a2 2 0 01-2 2C7.2 19 1 12.8 1 5a2 2 0 012-2h1z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          06 95 74 25 16
-        </a>
-      </div>
-
-      <div className="sin-tva">{TVA}</div>
-    </div>
-  );
-}
-
 /* ── SERVICES (TABS) ── */
-function Services({ urgencePulse }) {
+function Services() {
   const [active, setActive] = React.useState(0);
 
   const tabs = [
     { label: 'Immobilier',              hint: 'Photo · Vidéo · Luxe',      color: '#cfae6a', panel: <PanelImmo /> },
     { label: 'Inspection & Diagnostic', hint: 'Ouvrage · Façade · Toiture', color: '#4a7a96', panel: <PanelInsp /> },
-    { label: 'Sinistre',                hint: 'Urgent · 7j/7',              color: '#c0392b', panel: <PanelSin urgencePulse={urgencePulse} /> },
   ];
 
   const scrollToPanel = () => {

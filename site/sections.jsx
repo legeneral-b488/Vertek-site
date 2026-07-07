@@ -53,7 +53,7 @@ function About() {
           <h2 className="sec-title">Télépilote<br />de drone</h2>
           <p style={{ color: 'var(--muted)', fontSize: '16px', lineHeight: '1.75', maxWidth: '460px', marginBottom: '20px', fontWeight: 300 }}>
             Spécialisé en diagnostic aérien et inspection technique, Vertek intervient pour
-            l'immobilier, les ouvrages d'art, les sites industriels et l'expertise sinistre.
+            l'immobilier, les ouvrages d'art et les sites industriels.
           </p>
           <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.75', maxWidth: '460px', fontWeight: 300 }}>
             Certifié télépilote <strong style={{ color: 'var(--text)' }}>A1 / A3 DGAC</strong> et habilité
