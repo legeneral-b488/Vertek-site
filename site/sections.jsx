@@ -172,6 +172,16 @@ function Why() {
 
 /* ── PORTFOLIO / BIBLIOTHÈQUE ── */
 const TAG_ALL = 'Tout';
+const TAG_GROUPS = {
+  'Inspection': 'Inspection',
+  'Diagnostic': 'Inspection',
+  'Immobilier': 'Immobilier & Véhicule',
+  'Véhicules':  'Immobilier & Véhicule',
+  'Chantier':   'Chantier & Ferroviaire',
+  'Ferroviaire':'Chantier & Ferroviaire',
+};
+const GROUP_ORDER = [TAG_ALL, 'Inspection', 'Immobilier & Véhicule', 'Chantier & Ferroviaire'];
+const groupOf = tag => TAG_GROUPS[tag] || tag;
 
 function Portfolio() {
   const raw = (window.GALLERY && window.GALLERY.length > 0)
@@ -183,13 +193,10 @@ function Portfolio() {
       lbl: item.file.replace(/\.[^.]+$/, ''),
       tag: item.tag,
       mediaType: item.type,
-      src: item.type === 'video'
-        ? (item.src || `uploads/${encodeURIComponent(item.file)}`)
-        : (item.src || `uploads/${encodeURIComponent(item.file)}`),
+      src: item.src || `uploads/${encodeURIComponent(item.file)}`,
     }))
   );
 
-  const tags = [TAG_ALL, ...Array.from(new Set(cells.map(c => c.tag)))];
   const [activeTag, setActiveTag] = React.useState(TAG_ALL);
   const [visible, setVisible] = React.useState(() => new Set(cells.map((_, i) => i)));
   const [lightbox, setLightbox] = React.useState(null);
@@ -200,11 +207,12 @@ function Portfolio() {
     return () => window.removeEventListener('keydown', h);
   }, []);
 
-  const filtered = cells.filter((c, i) =>
-    visible.has(i) && (activeTag === TAG_ALL || c.tag === activeTag)
-  );
-
   const hideIdx = i => setVisible(prev => { const s = new Set(prev); s.delete(i); return s; });
+
+  const photos = cells.filter((c, i) => visible.has(i) && c.mediaType === 'photo');
+  const videos = cells.filter((c, i) => visible.has(i) && c.mediaType === 'video');
+
+  const filtered = photos.filter(c => activeTag === TAG_ALL || groupOf(c.tag) === activeTag);
 
   return (
     <section className="sec" id="portfolio" style={{ background: 'var(--bg2)' }}>
@@ -214,7 +222,7 @@ function Portfolio() {
         <p className="sec-sub">Cliquez sur une image pour l'agrandir.</p>
 
         <div className="lib-chips">
-          {tags.map(t => (
+          {GROUP_ORDER.map(t => (
             <button key={t} className={`lib-chip${activeTag === t ? ' active' : ''}`} onClick={() => setActiveTag(t)}>
               {t}
             </button>
@@ -222,28 +230,14 @@ function Portfolio() {
         </div>
 
         <div className="lib-grid">
-          {filtered.map((c, i) => {
+          {filtered.map(c => {
             const origIdx = cells.indexOf(c);
             return (
               <div key={origIdx} className="lib-cell" onClick={() => setLightbox(c)}>
-                {c.mediaType === 'video' ? (
-                  <video autoPlay muted loop playsInline src={c.src}
-                    onError={() => hideIdx(origIdx)}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
-                ) : (
-                  <img src={c.src} alt={c.lbl}
-                    onError={() => hideIdx(origIdx)}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
-                )}
-                {c.mediaType === 'video' && (
-                  <div className="lib-play">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M5 3l9 5-9 5V3z"/>
-                    </svg>
-                  </div>
-                )}
+                <img src={c.src} alt={c.lbl}
+                  onError={() => hideIdx(origIdx)}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
                 <div className="lib-cat">{c.tag}</div>
                 <div className="lib-lbl">{c.lbl}</div>
               </div>
@@ -255,6 +249,37 @@ function Portfolio() {
           <div style={{ textAlign: 'center', padding: '48px', color: 'var(--muted)', fontFamily: 'var(--font-display)', letterSpacing: '.1em', textTransform: 'uppercase', fontSize: '13px' }}>
             Aucune réalisation dans cette catégorie
           </div>
+        )}
+
+        {videos.length > 0 && (
+          <>
+            <div className="lib-video-sep">
+              <span className="ico">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3l9 5-9 5V3z"/></svg>
+              </span>
+              <span className="lbl">Vidéos</span>
+              <span className="rule" />
+            </div>
+            <div className="lib-video-grid">
+              {videos.map(c => {
+                const origIdx = cells.indexOf(c);
+                return (
+                  <div key={origIdx} className="lib-video-cell" onClick={() => setLightbox(c)}>
+                    <video autoPlay muted loop playsInline src={c.src}
+                      onError={() => hideIdx(origIdx)}
+                    />
+                    <div className="lib-play">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M5 3l9 5-9 5V3z"/>
+                      </svg>
+                    </div>
+                    <div className="lib-cat">{c.tag}</div>
+                    <div className="lib-lbl">{c.lbl}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         <div style={{ textAlign: 'center', marginTop: '36px' }}>
