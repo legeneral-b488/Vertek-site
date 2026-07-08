@@ -488,13 +488,13 @@ function Footer() {
         <a href="#portfolio">Réalisations</a>
         <a href="#contact">Contact</a>
         <a href="mentions-legales.html">Mentions légales</a>
+        <a href="https://www.linkedin.com/company/127624024/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--steel)' }}>BEVERT — Études environnementales</a>
       </div>
 
       <div className="footer-legal">
         VERILHAC Jules EI &nbsp;·&nbsp; SIRET 104 416 284 000 16 &nbsp;·&nbsp;
         TVA non applicable, art. 293 B du CGI &nbsp;·&nbsp;
-        32 allée Paul-Émile Victor, 38090 Villefontaine &nbsp;·&nbsp;
         <a href="mentions-legales.html">Mentions légales</a>
       </div>
     </footer>
