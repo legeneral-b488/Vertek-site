@@ -46,6 +46,18 @@ window.GALLERY = [
     tag:  'Inspection',
     src:  LFS + 'Vid%C3%A9o%20pont%20ouvrage%20d\'art.mp4',
   },
+  {
+    file: 'Hyperlapse.MP4',
+    type: 'video',
+    tag:  'Chantier',
+    src:  LFS + 'Hyperlapse.MP4',
+  },
+  {
+    file: 'PUB GRDE.mp4',
+    type: 'video',
+    tag:  'Chantier',
+    src:  LFS + 'PUB%20GRDE.mp4',
+  },
 
   /* ── PHOTOS (dossier uploads/) ── */
   {
