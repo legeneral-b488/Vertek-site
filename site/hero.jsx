@@ -270,8 +270,7 @@ function Hero({ scannerActive }) {
           Certifié A1 · Opérateur UAS DGAC · Disponible maintenant
         </div>
         <p className="hero-sub">
-          Prises de vue aériennes professionnelles pour <b>l'immobilier</b>
-          et l'<b>inspection &amp; diagnostique</b>.
+          Prises de vue aériennes professionnelles pour <b>l'immobilier</b> et l'<b>inspection &amp; diagnostique</b>.
         </p>
         <div className="hero-btns">
           <a href="#services" className="btn btn-paper">Nos prestations <Arr /></a>

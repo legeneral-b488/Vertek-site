@@ -70,6 +70,7 @@ function App() {
       <Why />
       <Portfolio />
       <Contact />
+      <BevertSection />
       <Footer />
       <TweaksPanel
         tweaks={tweaks}

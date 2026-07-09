@@ -53,10 +53,10 @@ window.GALLERY = [
     src:  LFS + 'Hyperlapse.MP4',
   },
   {
-    file: 'PUB GRDE.mp4',
+    file: 'Suivi de chantier.mp4',
     type: 'video',
     tag:  'Chantier',
-    src:  LFS + 'PUB%20GRDE.mp4',
+    src:  LFS + 'Suivi%20de%20chantier.mp4',
   },
 
   /* ── PHOTOS (dossier uploads/) ── */

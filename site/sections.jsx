@@ -67,31 +67,6 @@ function About() {
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '10px', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--green)', display: 'block', marginBottom: '8px' }}>Zone d'intervention</span>
             Isère (38) et départements limitrophes · Déplacements plus larges sur devis
           </div>
-
-          <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" className="bevert-card">
-            <svg width="120" height="110" viewBox="0 0 120 110" fill="none"
-              style={{ position: 'absolute', right: '-8px', bottom: '-16px', opacity: .3 }}>
-              <path d="M28 108C25 84 18 70 27 46c7 18 10 32 6 58" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M27 66c8-6 17-8 24-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M26 80c-9-5-16-8-23-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M27 46c-3-9-1-17 4-24" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <g transform="translate(51,22)">
-                <circle cx="0" cy="-9" r="6" fill="#fff"/>
-                <circle cx="8.5" cy="-4.5" r="6" fill="#fff"/>
-                <circle cx="8.5" cy="4.5" r="6" fill="#fff"/>
-                <circle cx="0" cy="9" r="6" fill="#fff"/>
-                <circle cx="-8.5" cy="4.5" r="6" fill="#fff"/>
-                <circle cx="-8.5" cy="-4.5" r="6" fill="#fff"/>
-                <circle cx="0" cy="0" r="5.5" fill="#2e5c44"/>
-              </g>
-              <circle cx="94" cy="52" r="4" fill="#fff"/>
-              <circle cx="102" cy="66" r="3" fill="#fff"/>
-              <circle cx="86" cy="70" r="3.5" fill="#fff"/>
-            </svg>
-            <span className="bevert-lbl">Structure sœur</span>
-            <span className="bevert-name">BEVERT</span>
-            <span className="bevert-desc">Bureau d'études environnementales · diagnostics écologiques, études d'impact.</span>
-          </a>
         </div>
 
         <div>
@@ -343,7 +318,7 @@ function Contact() {
           <div className="cinfo-item">
             <span className="cinfo-ico"><PhoneIco /></span>
             <div>
-              <div className="cinfo-lbl">Téléphone · 7j/7</div>
+              <div className="cinfo-lbl">Téléphone</div>
               <a href="tel:+33695742516" className="cinfo-val" style={{ color: 'var(--text)', textDecoration: 'none' }}>
                 06 95 74 25 16
               </a>
@@ -427,6 +402,38 @@ function Contact() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ── BEVERT (structure sœur) ── */
+function BevertSection() {
+  return (
+    <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" className="bevert-sec" id="bevert">
+      <svg width="320" height="290" viewBox="0 0 120 110" fill="none" className="bevert-deco">
+        <path d="M28 108C25 84 18 70 27 46c7 18 10 32 6 58" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M27 66c8-6 17-8 24-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M26 80c-9-5-16-8-23-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M27 46c-3-9-1-17 4-24" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <g transform="translate(51,22)">
+          <circle cx="0" cy="-9" r="6" fill="#fff"/>
+          <circle cx="8.5" cy="-4.5" r="6" fill="#fff"/>
+          <circle cx="8.5" cy="4.5" r="6" fill="#fff"/>
+          <circle cx="0" cy="9" r="6" fill="#fff"/>
+          <circle cx="-8.5" cy="4.5" r="6" fill="#fff"/>
+          <circle cx="-8.5" cy="-4.5" r="6" fill="#fff"/>
+          <circle cx="0" cy="0" r="5.5" fill="#2e5c44"/>
+        </g>
+        <circle cx="94" cy="52" r="4" fill="#fff"/>
+        <circle cx="102" cy="66" r="3" fill="#fff"/>
+        <circle cx="86" cy="70" r="3.5" fill="#fff"/>
+      </svg>
+      <div className="bevert-inner">
+        <span className="bevert-lbl">Structure sœur</span>
+        <span className="bevert-name">BEVERT</span>
+        <span className="bevert-desc">Bureau d'études environnementales · diagnostics écologiques, études d'impact.</span>
+        <span className="bevert-cta">Découvrir BEVERT <Arr /></span>
+      </div>
+    </a>
   );
 }
 
