@@ -90,7 +90,7 @@ function PanelInsp() {
 
   const forfaits = [
     { name: 'Repérage',          price: 120,  desc: 'Photos HD + rapport de reconnaissance, au choix en photos brutes ou en fichier standardisé simple.', hasVideo: true },
-    { name: 'Diagnostic',        price: 290,  desc: 'Photos HD + vidéo incluse + rapport structuré annoté.', rec: true },
+    { name: 'Diagnostic',        price: 200,  desc: 'Photos HD + vidéo incluse + rapport structuré annoté.', rec: true },
     { name: 'Suivi de chantier', price: null, desc: 'Accompagnement récurrent — prix défini au cas par cas.' },
   ];
 
