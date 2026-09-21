@@ -69,11 +69,6 @@ window.GALLERY = [
     type: 'photo',
     tag:  'Diagnostic',
   },
-  {
-    file: 'Bachage (Suivi de chantier).JPG',
-    type: 'photo',
-    tag:  'Chantier',
-  },
 
   /* ── Pour ajouter une vidéo LFS :
   {
