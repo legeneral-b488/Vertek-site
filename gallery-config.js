@@ -60,11 +60,6 @@ window.GALLERY = [
     tag:  'Inspection',
   },
   {
-    file: 'inspection bachage.JPG',
-    type: 'photo',
-    tag:  'Inspection',
-  },
-  {
     file: 'Diagnostique Inondation.JPG',
     type: 'photo',
     tag:  'Diagnostic',
