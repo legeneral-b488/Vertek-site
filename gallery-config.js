@@ -80,21 +80,6 @@ window.GALLERY = [
     type: 'photo',
     tag:  'Chantier',
   },
-  {
-    file: "Inspection d'après travaux (SNCF).JPG",
-    type: 'photo',
-    tag:  'Ferroviaire',
-  },
-  {
-    file: 'Pilier de Pont (SNCF).JPG',
-    type: 'photo',
-    tag:  'Ferroviaire',
-  },
-  {
-    file: 'Poteau caténaire (SNCF).JPG',
-    type: 'photo',
-    tag:  'Ferroviaire',
-  },
 
   /* ── Pour ajouter une vidéo LFS :
   {

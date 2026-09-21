@@ -42,7 +42,6 @@ function About() {
   const medals = [
     { color: '#4a7a96', glyph: '★', label: 'A1 / A3 DGAC',   sub: 'Règlement UE 2019/947', valid: "Valide jusqu'en 2034" },
     { color: '#e8e0d0', glyph: '✓', label: 'Opérateur UAS',   sub: 'Enregistré DGAC',       valid: "Valide jusqu'en 2034" },
-    { color: '#c0392b', glyph: '⚙', label: 'SECUFER',          sub: 'Milieux ferroviaires' },
   ];
 
   return (
@@ -56,9 +55,8 @@ function About() {
             l'immobilier, les ouvrages d'art et les sites industriels.
           </p>
           <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.75', maxWidth: '460px', fontWeight: 300 }}>
-            Certifié télépilote <strong style={{ color: 'var(--text)' }}>A1 / A3 DGAC</strong> et habilité
-            <strong style={{ color: 'var(--text)' }}> SECUFER</strong> pour les interventions en milieux ferroviaires
-            et zones industrielles à risques.
+            Certifié télépilote <strong style={{ color: 'var(--text)' }}>A1 / A3 DGAC</strong> pour
+            les interventions en zones industrielles à risques.
           </p>
           <div style={{
             marginTop: '24px', padding: '18px 22px', background: 'var(--bg3)',
@@ -119,8 +117,8 @@ function Why() {
         </svg>
       ),
       title: 'Sécurité avant tout',
-      body: 'Formé pour intervenir dans des environnements à risques : milieux ferroviaires (habilitation SECUFER) et zones industrielles contraintes. Protocoles de sécurité stricts à chaque mission.',
-      badge: 'SECUFER · Milieux industriels',
+      body: 'Formé pour intervenir dans des environnements à risques : zones industrielles contraintes. Protocoles de sécurité stricts à chaque mission.',
+      badge: 'Milieux industriels',
     },
   ];
 
@@ -152,10 +150,9 @@ const TAG_GROUPS = {
   'Diagnostic': 'Inspection',
   'Immobilier': 'Immobilier & Véhicule',
   'Véhicules':  'Immobilier & Véhicule',
-  'Chantier':   'Chantier & Ferroviaire',
-  'Ferroviaire':'Chantier & Ferroviaire',
+  'Chantier':   'Chantier',
 };
-const GROUP_ORDER = [TAG_ALL, 'Inspection', 'Immobilier & Véhicule', 'Chantier & Ferroviaire'];
+const GROUP_ORDER = [TAG_ALL, 'Inspection', 'Immobilier & Véhicule', 'Chantier'];
 const groupOf = tag => TAG_GROUPS[tag] || tag;
 
 function Portfolio() {
@@ -345,7 +342,6 @@ function Contact() {
               'Réponse sous 24h',
               'Devis gratuit sans engagement',
               'Certifié A1/A3 DGAC',
-              'Habilité SECUFER',
               'RC Pro souscrite',
             ].map((g, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '8px', fontSize: '14px', color: 'var(--muted)' }}>
@@ -402,38 +398,6 @@ function Contact() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ── BEVERT (structure sœur) ── */
-function BevertSection() {
-  return (
-    <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" className="bevert-sec" id="bevert">
-      <svg width="320" height="290" viewBox="0 0 120 110" fill="none" className="bevert-deco">
-        <path d="M28 108C25 84 18 70 27 46c7 18 10 32 6 58" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M27 66c8-6 17-8 24-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M26 80c-9-5-16-8-23-15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M27 46c-3-9-1-17 4-24" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-        <g transform="translate(51,22)">
-          <circle cx="0" cy="-9" r="6" fill="#fff"/>
-          <circle cx="8.5" cy="-4.5" r="6" fill="#fff"/>
-          <circle cx="8.5" cy="4.5" r="6" fill="#fff"/>
-          <circle cx="0" cy="9" r="6" fill="#fff"/>
-          <circle cx="-8.5" cy="4.5" r="6" fill="#fff"/>
-          <circle cx="-8.5" cy="-4.5" r="6" fill="#fff"/>
-          <circle cx="0" cy="0" r="5.5" fill="#2e5c44"/>
-        </g>
-        <circle cx="94" cy="52" r="4" fill="#fff"/>
-        <circle cx="102" cy="66" r="3" fill="#fff"/>
-        <circle cx="86" cy="70" r="3.5" fill="#fff"/>
-      </svg>
-      <div className="bevert-inner">
-        <span className="bevert-lbl">Structure sœur</span>
-        <span className="bevert-name">BEVERT</span>
-        <span className="bevert-desc">Bureau d'études environnementales · diagnostics écologiques, études d'impact.</span>
-        <span className="bevert-cta">Découvrir BEVERT <Arr /></span>
-      </div>
-    </a>
   );
 }
 
@@ -496,7 +460,6 @@ function Footer() {
         <a href="#contact">Contact</a>
         <a href="mentions-legales.html">Mentions légales</a>
         <a href="https://www.linkedin.com/company/127624024/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="https://bevert.fr" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--steel)' }}>BEVERT — Études environnementales</a>
       </div>
 
       <div className="footer-legal">
