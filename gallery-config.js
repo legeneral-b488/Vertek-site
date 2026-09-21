@@ -41,12 +41,6 @@ window.GALLERY = [
     src:  LFS + 'Inspection%20antenne.mp4',
   },
   {
-    file: 'Vidéo pont ouvrage d\'art.mp4',
-    type: 'video',
-    tag:  'Inspection',
-    src:  LFS + 'Vid%C3%A9o%20pont%20ouvrage%20d\'art.mp4',
-  },
-  {
     file: 'Hyperlapse.MP4',
     type: 'video',
     tag:  'Chantier',
