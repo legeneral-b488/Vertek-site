@@ -40,18 +40,6 @@ window.GALLERY = [
     tag:  'Inspection',
     src:  LFS + 'Inspection%20antenne.mp4',
   },
-  {
-    file: 'Hyperlapse.MP4',
-    type: 'video',
-    tag:  'Chantier',
-    src:  LFS + 'Hyperlapse.MP4',
-  },
-  {
-    file: 'Suivi de chantier.mp4',
-    type: 'video',
-    tag:  'Chantier',
-    src:  LFS + 'Suivi%20de%20chantier.mp4',
-  },
 
   /* ── PHOTOS (dossier uploads/) ── */
   {

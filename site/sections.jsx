@@ -150,9 +150,8 @@ const TAG_GROUPS = {
   'Diagnostic': 'Inspection',
   'Immobilier': 'Immobilier & Véhicule',
   'Véhicules':  'Immobilier & Véhicule',
-  'Chantier':   'Chantier',
 };
-const GROUP_ORDER = [TAG_ALL, 'Inspection', 'Immobilier & Véhicule', 'Chantier'];
+const GROUP_ORDER = [TAG_ALL, 'Inspection', 'Immobilier & Véhicule'];
 const groupOf = tag => TAG_GROUPS[tag] || tag;
 
 function Portfolio() {
