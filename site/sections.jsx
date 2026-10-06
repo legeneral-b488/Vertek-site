@@ -51,12 +51,11 @@ function About() {
           <div className="sec-lbl">Qui sommes-nous</div>
           <h2 className="sec-title">Télépilote<br />de drone</h2>
           <p style={{ color: 'var(--muted)', fontSize: '16px', lineHeight: '1.75', maxWidth: '460px', marginBottom: '20px', fontWeight: 300 }}>
-            Spécialisé en diagnostic aérien et inspection technique, Vertek intervient pour
-            l'immobilier, les ouvrages d'art et les sites industriels.
+            Spécialisé en prise de vue aérienne pour l'immobilier, Vertek accompagne les
+            agences dans la mise en valeur de leurs biens.
           </p>
           <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.75', maxWidth: '460px', fontWeight: 300 }}>
-            Certifié télépilote <strong style={{ color: 'var(--text)' }}>A1 / A3 DGAC</strong> pour
-            les interventions en zones industrielles à risques.
+            Télépilote certifié <strong style={{ color: 'var(--text)' }}>A1 / A3 DGAC</strong>.
           </p>
           <div style={{
             marginTop: '24px', padding: '18px 22px', background: 'var(--bg3)',
@@ -95,8 +94,8 @@ function Why() {
         </svg>
       ),
       title: 'Flexibilité réglementaire',
-      body: 'Notre DJI Mini 4 Pro (<250g) peut voler dans des zones restreintes aux drones lourds et opérer près des personnes sous certification A1, sans démarches complexes supplémentaires.',
-      badge: 'Certification A1 · <250g',
+      body: 'Notre DJI Mini 4 Pro (<250g) peut voler dans des zones restreintes aux drones lourds et opérer près des personnes en sous-catégorie A1, sans démarches complexes supplémentaires.',
+      badge: 'Drone < 250 g',
     },
     {
       icon: (
@@ -117,8 +116,8 @@ function Why() {
         </svg>
       ),
       title: 'Sécurité avant tout',
-      body: 'Formé pour intervenir dans des environnements à risques : zones industrielles contraintes. Protocoles de sécurité stricts à chaque mission.',
-      badge: 'Milieux industriels',
+      body: 'Chaque vol est préparé en amont : météo, environnement du bien, voisinage et autorisations. Protocoles de sécurité stricts à chaque mission.',
+      badge: 'Vols préparés',
     },
   ];
 
@@ -340,7 +339,6 @@ function Contact() {
             {[
               'Réponse sous 24h',
               'Devis gratuit sans engagement',
-              'Certifié A1/A3 DGAC',
               'RC Pro souscrite',
             ].map((g, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '8px', fontSize: '14px', color: 'var(--muted)' }}>

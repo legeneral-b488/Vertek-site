@@ -267,10 +267,10 @@ function Hero({ scannerActive }) {
         <div className="hero-vertek">VERTEK</div>
         <div className="hero-badge">
           <span className="hero-dot" />
-          Certifié A1 · Opérateur UAS DGAC · Disponible maintenant
+          Isère (38) · Disponible maintenant
         </div>
         <p className="hero-sub">
-          Prises de vue aériennes professionnelles pour <b>l'immobilier</b> et l'<b>inspection &amp; diagnostique</b>.
+          Photos et vidéos aériennes pour les <b>agences immobilières</b> : mettez vos biens en valeur et démarquez vos annonces.
         </p>
         <div className="hero-btns">
           <a href="#services" className="btn btn-paper">Nos prestations <Arr /></a>
