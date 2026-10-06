@@ -2,6 +2,9 @@
 
 const TVA = 'HT — TVA non applicable, art. 293 B du CGI';
 
+// Remise volume masquée pour l'instant — passer à true pour la réafficher
+const SHOW_REMISE = false;
+
 /* ── IMMOBILIER (LUXE) ── */
 function PanelImmo() {
   const packs = [
@@ -31,7 +34,7 @@ function PanelImmo() {
         </p>
       </div>
 
-      <div className="lux-grid" style={{ padding: '0 5vw' }}>
+      <div className="lux-grid" style={{ padding: SHOW_REMISE ? '0 5vw' : '0 5vw 72px' }}>
         {packs.map((p, i) => (
           <div key={i} className={`lux-card${p.feat ? ' feat' : ''}`}>
             {p.feat && <div className="lux-tag">{p.tag}</div>}
@@ -54,7 +57,7 @@ function PanelImmo() {
         ))}
       </div>
 
-      <div className="lux-remise" style={{ padding: '0 5vw 72px' }}>
+      {SHOW_REMISE && <div className="lux-remise" style={{ padding: '0 5vw 72px' }}>
         <div className="lux-remise-title">Remise Volume</div>
         <p className="lux-remise-sub">Pour les agences et promoteurs avec un flux régulier de biens.</p>
         <div className="lux-remise-grid">
@@ -68,7 +71,7 @@ function PanelImmo() {
           </div>
         </div>
         <div className="lux-footer-tva">Vous travaillez en volume ? <a href="#contact" style={{ color: 'var(--gold)' }}>Contactez-nous</a> pour un contrat-cadre mensuel.</div>
-      </div>
+      </div>}
     </div>
   );
 }
