@@ -152,6 +152,19 @@
   <div class="lux-launch"><span>Tarifs de lancement</span></div>
 
   <div class="lux-grid">
+    <div class="lux-card feat">
+      <div class="lux-tag">Le plus choisi</div>
+      <h3 class="lux-name">Pack complet</h3>
+      <div class="lux-price">100 €</div>
+      <div class="lux-tva">Prix net, TVA non applicable</div>
+      <div class="lux-inc">
+        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Photos intérieur : 1 par pièce (2 si nécessaire)</span>
+        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>5 photos aériennes</span>
+        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1 vidéo extérieure filmée par drone</span>
+      </div>
+      <a href="#devis" class="btn btn-gold" data-offre="pack">Demander un devis</a>
+    </div>
+
     <div class="lux-card">
       <h3 class="lux-name">Aérien</h3>
       <div class="lux-price">70 €</div>
@@ -171,19 +184,6 @@
         <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1 photo par pièce (2 si nécessaire)</span>
       </div>
       <a href="#devis" class="btn btn-gold" data-offre="interieur">Demander un devis</a>
-    </div>
-
-    <div class="lux-card feat">
-      <div class="lux-tag">Le plus choisi</div>
-      <h3 class="lux-name">Pack complet</h3>
-      <div class="lux-price">100 €</div>
-      <div class="lux-tva">Prix net, TVA non applicable</div>
-      <div class="lux-inc">
-        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Photos intérieur : 1 par pièce (2 si nécessaire)</span>
-        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>5 photos aériennes</span>
-        <span><span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1 vidéo extérieure filmée par drone</span>
-      </div>
-      <a href="#devis" class="btn btn-gold" data-offre="pack">Demander un devis</a>
     </div>
   </div>
 
@@ -279,9 +279,9 @@
       <fieldset>
         <legend class="f-legend">1 · Votre offre</legend>
         <div class="f-offres">
-          <label class="f-offre"><input type="radio" name="offre" value="Aérien — 70 €" data-id="aerien" data-nom="Aérien" data-prix="70" required /><span><b>Aérien</b><i>70 €</i></span></label>
+          <label class="f-offre"><input type="radio" name="offre" value="Pack complet — 100 €" data-id="pack" data-nom="Pack complet" data-prix="100" required checked /><span><b>Pack complet</b><i>100 €</i></span></label>
+          <label class="f-offre"><input type="radio" name="offre" value="Aérien — 70 €" data-id="aerien" data-nom="Aérien" data-prix="70" /><span><b>Aérien</b><i>70 €</i></span></label>
           <label class="f-offre"><input type="radio" name="offre" value="Intérieur — 70 €" data-id="interieur" data-nom="Intérieur" data-prix="70" /><span><b>Intérieur</b><i>70 €</i></span></label>
-          <label class="f-offre"><input type="radio" name="offre" value="Pack complet — 100 €" data-id="pack" data-nom="Pack complet" data-prix="100" checked /><span><b>Pack complet</b><i>100 €</i></span></label>
         </div>
       </fieldset>
       <p class="f-recap" id="f-recap" aria-live="polite">Votre choix : <strong>Pack complet — 100 €</strong> net, par bien.</p>
