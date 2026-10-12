@@ -2,3 +2,6 @@
 * text=auto
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.MP4 filter=lfs diff=lfs merge=lfs -text
+# Vidéos légères du site : fichiers normaux (pas de LFS), pour que Vercel les publie telles quelles
+realisations/*.mp4 -filter -diff -merge -text
+assets/*.mp4 -filter -diff -merge -text

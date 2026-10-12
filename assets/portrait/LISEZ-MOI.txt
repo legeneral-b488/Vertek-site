@@ -1,0 +1,5 @@
+PORTRAIT — bas de page du site
+
+Déposer ici la photo sous le nom exact : portrait.jpg
+  - Format carré, 400 x 400 px minimum, 200 Ko maximum.
+Tant que le fichier n'existe pas, le site affiche les initiales « JV ».

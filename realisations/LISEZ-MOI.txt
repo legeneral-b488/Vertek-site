@@ -1,0 +1,22 @@
+DOSSIER DES RÉALISATIONS — VerTek
+
+Ce dossier alimente la section « Nos réalisations » du site.
+Il suffit de déposer ou remplacer les fichiers, sans toucher au code.
+
+PHOTOS (6 emplacements)
+  photo-1.jpg, photo-2.jpg, photo-3.jpg, photo-4.jpg, photo-5.jpg, photo-6.jpg
+  - Format JPG, paysage, 1600 px de large, 500 Ko maximum par photo.
+  - Un fichier absent = un emplacement vide « Photo à venir ».
+
+VIDÉOS DRONE (3 emplacements)
+  video-1.mp4, video-2.mp4, video-3.mp4
+      les vidéos (MP4 H.264, 1280x720, 15 Mo maximum, sans son de préférence)
+  video-1-poster.jpg, video-2-poster.jpg, video-3-poster.jpg
+      l'image affichée avant lecture (1280 px de large)
+  - Sans son image « poster », l'emplacement reste vide « Vidéo à venir ».
+
+LÉGENDES
+  Le petit texte affiché sur chaque vignette se règle dans index.html (data-titre="...").
+  Si vous remplacez un fichier par un autre sujet, demandez à mettre la légende à jour.
+
+Ne pas déposer les originaux du drone (20 à 500 Mo) : le site deviendrait très lent.
