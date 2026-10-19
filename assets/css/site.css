@@ -192,7 +192,8 @@ a{color:inherit;}
 .lux-opt strong{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--gold);line-height:1;white-space:nowrap;}
 .lux-after{text-align:center;padding:34px 5vw 72px;max-width:1160px;margin:0 auto;display:grid;gap:6px;}
 .lux-after p{font-size:13px;color:rgba(238,229,211,.55);}
-.lux-after p:first-child{font-size:14px;color:rgba(238,229,211,.8);}
+.lux-opt-both{border:1px solid var(--gold);background:rgba(207,174,106,.1);padding:14px 14px;margin:0 -14px;}
+.lux-opt-both b{color:var(--gold);}
 
 /* —— COMMENT ÇA MARCHE —— */
 .steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
@@ -330,3 +331,6 @@ footer{background:#171209;color:rgba(243,234,216,.8);padding:64px 5vw 30px;text-
 .f-field .f-invalid,.f-field input.f-invalid{border-color:var(--alert);}
 #f-offres-set.f-invalid .f-offre span{border-color:var(--alert);}
 .f-done a{color:var(--green);}
+.lux-price small{display:block;font-family:var(--font-body);font-size:13px;font-weight:400;color:rgba(238,229,211,.7);margin-top:8px;line-height:1.4;}
+.lux-after .lux-after-main{font-size:14.5px;color:rgba(238,229,211,.85);max-width:760px;margin:0 auto 6px;line-height:1.6;}
+.f-offre small{font-size:12px;color:var(--muted);line-height:1.3;margin-top:2px;}
