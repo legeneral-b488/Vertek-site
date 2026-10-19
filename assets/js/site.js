@@ -155,6 +155,37 @@
     poster.src = vcell.getAttribute('data-poster');
   });
 
+  /* ── Reels : le bloc reste masqué tant qu'aucun reel n'est disponible ── */
+  var reelsBloc = $('#reels-bloc');
+  if (reelsBloc) {
+    $$('#reels .reel-cell').forEach(function (cell, i) {
+      var poster = new Image();
+      poster.alt = 'Reel VerTek ' + (i + 1);
+      poster.loading = 'lazy';
+      poster.onload = function () { reelsBloc.hidden = false; };
+      poster.onerror = function () { cell.parentNode.removeChild(cell); };
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Lire le reel ' + (i + 1));
+      btn.appendChild(poster);
+      var play = document.createElement('span');
+      play.className = 'lib-play';
+      play.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3l9 5-9 5V3z"/></svg>';
+      btn.appendChild(play);
+      btn.addEventListener('click', function () {
+        var v = document.createElement('video');
+        v.src = cell.getAttribute('data-video');
+        v.className = 'vertical';
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        openLightbox(v);
+      });
+      cell.appendChild(btn);
+      poster.src = cell.getAttribute('data-poster');
+    });
+  }
+
   /* ── Portrait : affiche la photo si le fichier existe, sinon les initiales ── */
   var portrait = $('#portrait');
   if (portrait) {
@@ -167,23 +198,15 @@
   /* ── Formulaire de devis ── */
   var form = $('#devis-form');
   if (!form) return;
-  var recap = $('#f-recap'), status = $('#f-status'), submit = $('#f-submit');
-  var radios = $$('input[name="offre"]', form);
+  var status = $('#f-status'), submit = $('#f-submit');
+  var offres = $$('input[name="offre"]', form);
+  var offresSet = $('#f-offres-set');
 
-  var updateRecap = function () {
-    var r = radios.filter(function (x) { return x.checked; })[0];
-    recap.innerHTML = r
-      ? 'Votre choix : <strong>' + r.getAttribute('data-nom') + ' — ' + r.getAttribute('data-prix') + ' €</strong> net, par bien.'
-      : 'Choisissez une offre.';
-  };
-  radios.forEach(function (r) { r.addEventListener('change', updateRecap); });
-  updateRecap();
-
-  // Les boutons des cartes d'offres présélectionnent l'offre dans le formulaire
+  // Les boutons des cartes d'offres cochent l'offre correspondante dans le formulaire
   $$('[data-offre]').forEach(function (a) {
     a.addEventListener('click', function () {
-      var r = $('input[data-id="' + a.getAttribute('data-offre') + '"]', form);
-      if (r) { r.checked = true; updateRecap(); }
+      var c = $('input[data-id="' + a.getAttribute('data-offre') + '"]', form);
+      if (c) c.checked = true;
     });
   });
 
@@ -198,37 +221,67 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
     return m ? m[3] + '/' + m[2] + '/' + m[1] : iso;
   };
+  var choisies = function () {
+    return offres.filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+  };
+
+  // Validation simple : champs obligatoires remplis, email valide, au moins une offre, accord coché
+  var valider = function () {
+    var manquants = 0;
+    $$('input[required]:not([type="checkbox"]), textarea[required], select[required]', form).forEach(function (f) {
+      var ok = f.value.trim() !== '' && f.checkValidity();
+      f.classList.toggle('f-invalid', !ok);
+      if (!ok) manquants++;
+    });
+    var aucuneOffre = choisies().length === 0;
+    offresSet.classList.toggle('f-invalid', aucuneOffre);
+    var consent = $('#f-consent').checked;
+    if (manquants || aucuneOffre || !consent) {
+      var msg = [];
+      if (manquants) msg.push('remplir les champs en rouge');
+      if (aucuneOffre) msg.push('choisir au moins une offre');
+      if (!consent) msg.push('cocher la case d\'accord');
+      status.textContent = 'Merci de ' + msg.join(', ') + '.';
+      var premier = $('.f-invalid', form);
+      if (premier && premier.scrollIntoView) premier.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    return true;
+  };
+  form.addEventListener('input', function (e) {
+    if (e.target.classList.contains('f-invalid') && e.target.value.trim() !== '' && e.target.checkValidity()) e.target.classList.remove('f-invalid');
+  });
+  offres.forEach(function (c) {
+    c.addEventListener('change', function () { if (choisies().length) offresSet.classList.remove('f-invalid'); });
+  });
+
+  var termine = function () {
+    form.hidden = true;
+    $('#f-done').hidden = false;
+    $('#devis').scrollIntoView({ behavior: 'smooth' });
+  };
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     status.textContent = '';
 
     // Anti-spam : un robot remplit les champs invisibles, on fait comme si c'était envoyé
-    if (form.elements.botcheck.checked || form.elements.site_web.value) {
-      form.hidden = true; $('#f-done').hidden = false;
-      return;
-    }
-    if (!form.checkValidity()) {
-      status.textContent = $('#f-consent').checked
-        ? 'Merci de remplir tous les champs (le message est facultatif).'
-        : 'Merci de remplir tous les champs et de cocher la case d\'accord.';
-      if (form.reportValidity) form.reportValidity();
-      return;
-    }
+    if (form.elements.botcheck.checked || form.elements.site_web.value) { termine(); return; }
+    if (!valider()) return;
 
     var data = {
-      'Offre': val('offre'),
-      'Nom': val('nom'),
       'Agence': val('agence'),
-      'Téléphone': val('telephone'),
+      'Contact': val('contact'),
       'Email': val('email'),
-      'Adresse du bien': val('adresse_du_bien'),
+      'Téléphone': val('telephone'),
+      'Offre(s) souhaitée(s)': choisies().join(', '),
+      'Ville du bien': val('ville'),
+      'Type de bien et surface': val('type_surface'),
       'Date souhaitée': frDate(val('date_souhaitee')),
-      'Accès au bien': val('acces_au_bien'),
       'Message': val('message') || '—',
       'Consentement': 'Oui'
     };
-    var sujet = 'Demande de devis — ' + data['Offre'] + ' — ' + data['Agence'];
+    var sujet = 'Demande de devis — ' + data['Agence'] + ' — ' + data['Ville du bien'];
 
     // Clé non renseignée : on ouvre un email pré-rempli
     if (!WEB3FORMS_KEY || WEB3FORMS_KEY === 'A_COMPLETER') {
@@ -251,9 +304,7 @@
       .then(function (r) { return r.json(); })
       .then(function (j) {
         if (!j.success) throw new Error(j.message || 'Erreur');
-        form.hidden = true;
-        $('#f-done').hidden = false;
-        $('#devis').scrollIntoView({ behavior: 'smooth' });
+        termine();
       })
       .catch(function () {
         submit.disabled = false;

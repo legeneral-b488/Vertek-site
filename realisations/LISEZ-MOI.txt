@@ -15,6 +15,13 @@ VIDÉOS DRONE (3 emplacements)
       l'image affichée avant lecture (1280 px de large)
   - Sans son image « poster », l'emplacement reste vide « Vidéo à venir ».
 
+REELS (vidéos verticales 9:16)
+  reel-1.mp4, reel-2.mp4, …       les reels (MP4 H.264, 1080x1920, 15 Mo maximum)
+  reel-1-poster.jpg, …            l'image affichée avant lecture (format vertical)
+  - Le bloc « Reels pour les réseaux » reste masqué tant qu'aucun reel n'est déclaré.
+  - Après avoir déposé les fichiers, il faut ajouter une ligne par reel dans index.html
+    (modèle en commentaire au-dessus du bloc) : demandez-le si besoin.
+
 LÉGENDES
   Le petit texte affiché sur chaque vignette se règle dans index.html (data-titre="...").
   Si vous remplacez un fichier par un autre sujet, demandez à mettre la légende à jour.
